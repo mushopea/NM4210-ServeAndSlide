@@ -1,165 +1,277 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-    <title>Physics Pong</title>
-  <script type="text/javascript" src="js/phaser.min.js"></script>
+    <meta charset="UTF-8" />
+    <title>Physics Slide!</title>
+    <script type="text/javascript" src="js/phaser.min.js"></script>
     <style type="text/css">
         body {
             margin: 0;
         }
     </style>
 </head>
+
 <body>
 
 
-  <script type="text/javascript">
+<script type="text/javascript">
 
-  var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+    // initialize game
+    var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
+        preload: preload,
+        create: create,
+        update: update
+    });
 
-  function preload() {
+    // initialize fonts
+    WebFontConfig = {
+        //  'active' means all requested fonts have finished loading
+        //  We set a 1 second delay before calling 'createText'.
+        //  For some reason if we don't the browser cannot render the text the first time it's created.
+        active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
 
-      game.load.image('sky', 'assets/sky.png');
-      game.load.image('ground', 'assets/platform.png');
-      game.load.image('star', 'assets/star.png');
-      game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+        //  The Google Fonts we want to load (specify as many as you like in the array)
+        google: {
+            families: ['Revalia']
+        }
+    };
 
-  }
+    function preload() {
 
-  var player;
-  var platforms;
-  var cursors;
+        //  Load the Google WebFont Loader script
+        game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
-  var stars;
-  var score = 0;
-  var scoreText;
+        game.load.image('sky', 'assets/sky.png');
+        game.load.image('ground', 'assets/platform.png');
+        game.load.image('star', 'assets/star.png');
+        game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 
-  function create() {
+        // load item images
+        game.load.image('teaCup', 'assets/300.png');
+        game.load.image('wineGlass', 'assets/500.png');
+        game.load.image('milkBottle', 'assets/700.png');
+        game.load.image('waterJug', 'assets/1000.png');
+        game.load.image('beerBarrel', 'assets/2000.png');
 
-      //  We're going to be using physics, so enable the Arcade Physics system
-      game.physics.startSystem(Phaser.Physics.ARCADE);
 
-      //  A simple background for our game
-      game.add.sprite(0, 0, 'sky');
+    }
 
-      //  The platforms group contains the ground and the 2 ledges we can jump on
-      platforms = game.add.group();
+    var player;
+    var platforms;
+    var cursors;
+    var stars;
+    var score = 0;
+    var scoreText;
 
-      //  We will enable physics for any object that is created in this group
-      platforms.enableBody = true;
+    // = = = = = = = = = = = = = = = = =
+    // Game variables
+    // = = = = = = = = = = = = = = = = =
 
-      // Here we create the ground.
-      var ground = platforms.create(0, game.world.height - 64, 'ground');
+    // sensor data
+    var ipAddress;
 
-      //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-      ground.scale.setTo(2, 2);
+    // game variables and limits
+    var maxNumberOfPlayers = 5;
+    var numberOfPlayers = 1;
+    var numberOfRounds = 5;
 
-      //  This stops it from falling away when you jump on it
-      ground.body.immovable = true;
+    // player scores
+    var scores = [];
+    for (i = 0; i < numberOfPlayers; i++) {
+        scores.push(0);
+    }
 
-      //  Now let's create two ledges
-      var ledge = platforms.create(400, 400, 'ground');
-      ledge.body.immovable = true;
+    // item values
+    var numberOfItems = 5;
+    var itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Water Jug", "Beer Barrel"];
+    var itemWeight = [300, 500, 700, 1000, 2000];
+    var itemImage = ['teaCup', 'wineGlass', 'milkBottle', 'waterJug', 'beerBarrel'];
 
-      ledge = platforms.create(-150, 250, 'ground');
-      ledge.body.immovable = true;
+    // surface values
+    var numberOfSurfaces = 3;
+    var surfaceName = ["wood", "rubber", "ice"];
+    var surfaceFriction = [0.3, 0.6, 0.05]; // source: http://www.engineeringtoolbox.com/friction-coefficients-d_778.html
 
-      // The player and its settings
-      player = game.add.sprite(32, game.world.height - 150, 'dude');
 
-      //  We need to enable physics on the player
-      game.physics.arcade.enable(player);
+    function create() {
 
-      //  Player physics properties. Give the little guy a slight bounce.
-      player.body.bounce.y = 0.2;
-      player.body.gravity.y = 300;
-      player.body.collideWorldBounds = true;
+        // connect to sensorendipity
+        connect();
 
-      //  Our two animations, walking left and right.
-      player.animations.add('left', [0, 1, 2, 3], 10, true);
-      player.animations.add('right', [5, 6, 7, 8], 10, true);
+        // = = = = = = = = = = = = = = = = =
+        // Game world
+        // = = = = = = = = = = = = = = = = =
 
-      //  Finally some stars to collect
-      stars = game.add.group();
+        //  We're going to be using physics, so enable the Arcade Physics system
+        game.physics.startSystem(Phaser.Physics.ARCADE);
 
-      //  We will enable physics for any star that is created in this group
-      stars.enableBody = true;
+        //  A simple background for our game
+        game.add.sprite(0, 0, 'sky');
 
-      //  Here we'll create 12 of them evenly spaced apart
-      for (var i = 0; i < 12; i++)
-      {
-          //  Create a star inside of the 'stars' group
-          var star = stars.create(i * 70, 0, 'star');
+        //  The platforms group contains the ground and the 2 ledges we can jump on
+        platforms = game.add.group();
 
-          //  Let gravity do its thing
-          star.body.gravity.y = 300;
+        //  We will enable physics for any object that is created in this group
+        platforms.enableBody = true;
 
-          //  This just gives each star a slightly random bounce value
-          star.body.bounce.y = 0.7 + Math.random() * 0.2;
-      }
+        // Here we create the ground.
+        var ground = platforms.create(0, game.world.height - 64, 'ground');
 
-      //  The score
-      scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+        //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
+        ground.scale.setTo(2, 2);
 
-      //  Our controls.
-      cursors = game.input.keyboard.createCursorKeys();
+        //  This stops it from falling away when you jump on it
+        ground.body.immovable = true;
 
-  }
+        //  Now let's create two ledges
+        var ledge = platforms.create(400, 400, 'ground');
+        ledge.body.immovable = true;
 
-  function update() {
+        ledge = platforms.create(-150, 250, 'ground');
+        ledge.body.immovable = true;
 
-      //  Collide the player and the stars with the platforms
-      game.physics.arcade.collide(player, platforms);
-      game.physics.arcade.collide(stars, platforms);
+        // The player and its settings
+        player = game.add.sprite(32, game.world.height - 150, 'dude');
 
-      //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-      game.physics.arcade.overlap(player, stars, collectStar, null, this);
+        //  We need to enable physics on the player
+        game.physics.arcade.enable(player);
 
-      //  Reset the players velocity (movement)
-      player.body.velocity.x = 0;
+        //  Player physics properties. Give the little guy a slight bounce.
+        player.body.bounce.y = 0.2;
+        player.body.gravity.y = 300;
+        player.body.collideWorldBounds = true;
 
-      if (cursors.left.isDown)
-      {
-          //  Move to the left
-          player.body.velocity.x = -150;
+        //  Our two animations, walking left and right.
+        player.animations.add('left', [0, 1, 2, 3], 10, true);
+        player.animations.add('right', [5, 6, 7, 8], 10, true);
 
-          player.animations.play('left');
-      }
-      else if (cursors.right.isDown)
-      {
-          //  Move to the right
-          player.body.velocity.x = 150;
+        //  Finally some stars to collect
+        stars = game.add.group();
 
-          player.animations.play('right');
-      }
-      else
-      {
-          //  Stand still
-          player.animations.stop();
+        //  We will enable physics for any star that is created in this group
+        stars.enableBody = true;
 
-          player.frame = 4;
-      }
+        //  Here we'll create 12 of them evenly spaced apart
+        for (var i = 0; i < 12; i++) {
+            //  Create a star inside of the 'stars' group
+            var star = stars.create(i * 70, 0, 'star');
 
-      //  Allow the player to jump if they are touching the ground.
-      if (cursors.up.isDown && player.body.touching.down)
-      {
-          player.body.velocity.y = -350;
-      }
+            //  Let gravity do its thing
+            star.body.gravity.y = 300;
 
-  }
+            //  This just gives each star a slightly random bounce value
+            star.body.bounce.y = 0.7 + Math.random() * 0.2;
+        }
 
-  function collectStar (player, star) {
+        //  The score
+        scoreText = game.add.text(16, 16, 'score: 0', {
+            fontSize: '32px',
+            fill: '#000'
+        });
 
-      // Removes the star from the screen
-      star.kill();
+        //  Our controls.
+        cursors = game.input.keyboard.createCursorKeys();
 
-      //  Add and update the score
-      score += 10;
-      scoreText.text = 'Score: ' + score;
+    }
 
-  }
+    function update() {
+        var sensorValue = getSensorValue();
+        console.log(sensorValue);
 
-  </script>
+        //  Collide the player and the stars with the platforms
+        game.physics.arcade.collide(player, platforms);
+        game.physics.arcade.collide(stars, platforms);
 
-  </body>
-  </html>
+        //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
+        game.physics.arcade.overlap(player, stars, collectStar, null, this);
+
+        //  Reset the players velocity (movement)
+        player.body.velocity.x = 0;
+
+        if (cursors.left.isDown) {
+            //  Move to the left
+            player.body.velocity.x = -150;
+
+            player.animations.play('left');
+        } else if (cursors.right.isDown) {
+            //  Move to the right
+            player.body.velocity.x = 150;
+
+            player.animations.play('right');
+        } else {
+            //  Stand still
+            player.animations.stop();
+
+            player.frame = 4;
+        }
+
+        //  Allow the player to jump if they are touching the ground.
+        if (cursors.up.isDown && player.body.touching.down) {
+            player.body.velocity.y = -350;
+        }
+
+    }
+
+    function collectStar(player, star) {
+
+        // Removes the star from the screen
+        star.kill();
+
+        //  Add and update the score
+        score += 10;
+        scoreText.text = 'Score: ' + score;
+
+    }
+
+
+    // = = = = = = = = = = = = = = = = =
+    // Sensor IP
+    // = = = = = = = = = = = = = = = = =
+
+    // Get the IP address from the textbox.
+    function setIP() {
+        ipAddress = document.getElementById("input_ip_address").value;
+        console.log(ipAddress);
+    }
+
+    // Get the JSON data string from the IP address.
+    function httpGet(theUrl) {
+        var xmlHttp = null;
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", theUrl, false);
+        xmlHttp.send(null);
+        return xmlHttp.responseText;
+    }
+
+    // Connect the phone to the desktop game, through IP address --> call this in the first game screen
+    function connect() {
+        setIP();
+
+        // Try to get the initial data of the server. If the IP is incorrect, this gives a pop-up.
+        try {
+            sensorJSON = JSON.parse(httpGet(ipAddress)).sensors;
+        } catch (e) {
+            alert("Invalid IP address");
+        }
+    }
+
+    // Get the accelerometer value! --> call this every update
+    function getSensorValue() {
+        var sensorData = JSON.parse(httpGet(ipAddress)).sensors;
+
+        // loops through all the sensors to find the accelerometer. O(n)? MUCH INEFFICIENT, WTF.
+        sensorData.forEach(
+            function(element, index) {
+                console.log(element.type + ' [' + index + ']');
+                if (element.type === 'linear_acceleration') {
+                    return element.values[1]; // return linear_acceleration_y value, the second value in the array
+                }
+            }
+        )
+    }
+
+
+</script>
+</body>
+</html>
