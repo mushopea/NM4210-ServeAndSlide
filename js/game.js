@@ -14,6 +14,11 @@ Slider.Game = function(game) {
     // game assets
     this.player = null;
 
+    // sensor values
+    this.minSensorValue = 1;
+    this.maxSensorValue = 20;
+    this.currMaxValue = 0;
+
     // item values
     this.numberOfItems = 5;
     this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Water Jug", "Beer Barrel"];
@@ -59,7 +64,7 @@ Slider.Game.prototype.getSensorValue = function() {
 
     // goes through sensor data to find linear acceleration
     for (var m = 0; m < sensorData.length; m++) {
-        if (sensorData[m].type == 'linear_acceleration') {
+        if (sensorData[m].type == 'accelerometer') {
             return sensorData[m].values[1]; // return lin_acc_y value
         }
     }
@@ -71,8 +76,12 @@ Slider.Game.prototype.update = function() {
         var sensorValue = this.getSensorValue();
         console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
 
-        if (sensorValue > 0) {
-            this.player.body.moveUp(sensorValue * 100);
+        if (sensorValue > this.minSensorValue) {
+           //if (this.currMaxValue < sensorValue) {
+               // this.currMaxValue = sensorValue;
+                console.log("Moving up by new currMaxValue = " + this.currMaxValue);
+                this.player.body.moveUp(sensorValue * 100); // only move up if new sensor value is larger than max value
+            //}
         }
     }
 
