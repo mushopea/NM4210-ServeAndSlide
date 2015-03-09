@@ -1,4 +1,41 @@
+@font-face {
+	font-family: "Balsamiq";
+	src: url("../assets/fonts/BalsamiqSansRegular.ttf");
+}
+@font-face {
+	font-family: "Balsamiq";
+	src: url("../assets/fonts/BalsamiqSansBold.ttf");
+	font-weight: bold;
+}
+@font-face {
+	font-family: "Balsamiq";
+	src: url("../assets/fonts/BalsamiqSansItalic.ttf");
+	font-style: italic, oblique;
+}
+@font-face {
+	font-family: "Balsamiq";
+	src: url("../assets/fonts/BalsamiqSansBoldItalic.ttf");
+	font-weight: bold;
+	font-style: italic, oblique;
+}
+
+
 body {
 	margin: 0;
+	font: 20px 'Balsamiq';
 	background: #B4D9E7;
+}
+
+#ip_textbox {
+	/*visibility: hidden;*/
+	z-index: 999;
+	border: 1px solid #848484;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	outline: 0;
+	height: 40px;
+	width: 400px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
