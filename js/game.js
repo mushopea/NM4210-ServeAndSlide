@@ -15,7 +15,7 @@ Slider.Game = function(game) {
     this.player = null;
 
     // sensor values
-    this.minSensorValue = 1;
+    this.minSensorValue = 3;
     this.maxSensorValue = 20;
     this.currMaxValue = 0;
 
@@ -37,14 +37,15 @@ Slider.Game.prototype.create = function() {
     // = = = = = = = = = = = = = = = = =
 
     // We're going to be using physics, so enable the Arcade Physics system
-    this.physics.startSystem(Phaser.Physics.P2JS);
+    this.physics.startSystem(Phaser.Physics.ARCADE);
 
     // A simple background for our game
     this.add.sprite(0, 0, 'sky');
 
     // Player sprite
     this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'beerBarrel');
-    this.physics.p2.enable(this.player);
+    this.physics.enable(this.player, Phaser.Physics.ARCADE);
+    this.player.body.drag.set(100);
 }
 
 
@@ -64,7 +65,7 @@ Slider.Game.prototype.getSensorValue = function() {
 
     // goes through sensor data to find linear acceleration
     for (var m = 0; m < sensorData.length; m++) {
-        if (sensorData[m].type == 'accelerometer') {
+        if (sensorData[m].type == 'linear_acceleration') {
             return sensorData[m].values[1]; // return lin_acc_y value
         }
     }
@@ -72,19 +73,23 @@ Slider.Game.prototype.getSensorValue = function() {
 
 Slider.Game.prototype.update = function() {
 
-    if (this.currentGameState == "waitingToPushObject") {
+    if (this.currentGameState == "waitingToPushObject" && this.currentRound === 1) {
         var sensorValue = this.getSensorValue();
-        console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
+        //console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
 
         if (sensorValue > this.minSensorValue) {
-           //if (this.currMaxValue < sensorValue) {
-               // this.currMaxValue = sensorValue;
+           if (this.currMaxValue < sensorValue) {
+                this.currMaxValue = sensorValue;
+                this.physics.arcade.accelerationFromRotation(-Math.PI/2,  this.currMaxValue*700, this.player.body.acceleration);
                 console.log("Moving up by new currMaxValue = " + this.currMaxValue);
-                this.player.body.moveUp(sensorValue * 100); // only move up if new sensor value is larger than max value
-            //}
+            } else {
+               this.player.body.acceleration.set(0);
+               this.currentRound++;
+           }
+        } else {
+            this.player.body.acceleration.set(0);
         }
     }
-
 
     this.frameCount++;
 }
