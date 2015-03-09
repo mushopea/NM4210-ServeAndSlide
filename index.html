@@ -3,13 +3,64 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Physics Slide!</title>
-    <script type="text/javascript" src="js/phaser.min.js"></script>
-    <style type="text/css">
-        body {
-            margin: 0;
+    <title>PENIS</title>
+
+    <!-- Global Variables -->
+    <script type = "text/javascript">
+        // = = = = = = = = = = = = = = = = =
+        // Fonts
+        // = = = = = = = = = = = = = = = = =
+        WebFontConfig = {
+            google: {
+                families: ['Orbitron:700:latin']
+                // sample usage: this.add.text(70, 380, “TOUCH TO\nSTART”, {font: “30px Orbitron”, align:”center”, fill:”#fff”});
+            }
+        };
+        (function() {
+            var wf = document.createElement('script');
+            wf.src = ('https:'== document.location.protocol ? 'https': 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+            wf.type = 'text / javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+        })();
+
+        // = = = = = = = = = = = = = = = = =
+        // Variables shared between states
+        // = = = = = = = = = = = = = = = = =
+
+        // sensor data
+        var ipAddress;
+
+        // game variables and limits
+        var maxNumberOfPlayers = 5;
+        var numberOfPlayers = 1;
+        var numberOfRounds = 5;
+
+        // player scores
+        var scores = [];
+        for (i = 0; i < numberOfPlayers; i++) {
+            scores.push(0);
         }
-    </style>
+
+    </script>
+
+    <!-- include phaser -->
+    <script type="text/javascript" src="js/phaser.min.js"></script>
+
+
+    <!-- include all game states -->
+    <script type="text/javascript" src="js/boot.js"></script>
+    <script type="text/javascript" src="js/preloader.js"></script>
+    <script type="text/javascript" src="js/mainmenu.js"></script>
+    <script type="text/javascript" src="js/playermenu.js"></script>
+    <script type="text/javascript" src="js/multiplayermenu.js"></script>
+    <script type="text/javascript" src="js/game.js"></script>
+    <script type="text/javascript" src="js/gameover.js"></script>
+
+    <!-- include CSS -->
+    <link rel="stylesheet" href="css/main.css">
+
 </head>
 
 <body>
@@ -24,18 +75,14 @@
         update: update
     });
 
-    // initialize fonts
-    WebFontConfig = {
-        //  'active' means all requested fonts have finished loading
-        //  We set a 1 second delay before calling 'createText'.
-        //  For some reason if we don't the browser cannot render the text the first time it's created.
-        active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
-
-        //  The Google Fonts we want to load (specify as many as you like in the array)
-        google: {
-            families: ['Revalia']
-        }
-    };
+    // add game states (aka the game screens)
+    game.state.add('Boot', SliderGame.Boot); // boot the game
+    game.state.add('Preloader', SliderGame.Preloader); // show loading bar
+    game.state.add('MainMenu', SliderGame.MainMenu); // ask for IP address
+    game.state.add('PlayerMenu', SliderGame.PlayerMenu); // ask 1 player or multiplayer
+    game.state.add('MultiplayerMenu', SliderGame.MultiplayerMenu); // enter number of players for multiplayers
+    game.state.add('Game', SliderGame.Game); // the game itself
+    game.state.add('GameOver', SliderGame.GameOver); // end game that shows winner, scores and "restart" button
 
     function preload() {
 
@@ -67,20 +114,6 @@
     // = = = = = = = = = = = = = = = = =
     // Game variables
     // = = = = = = = = = = = = = = = = =
-
-    // sensor data
-    var ipAddress;
-
-    // game variables and limits
-    var maxNumberOfPlayers = 5;
-    var numberOfPlayers = 1;
-    var numberOfRounds = 5;
-
-    // player scores
-    var scores = [];
-    for (i = 0; i < numberOfPlayers; i++) {
-        scores.push(0);
-    }
 
     // item values
     var numberOfItems = 5;
@@ -231,7 +264,7 @@
 
     // Get the IP address from the textbox.
     function setIP() {
-        ipAddress = document.getElementById("input_ip_address").value;
+        ipAddress = document.getElementById("input_ip_address").value; // input_ip_address is the textbox that asks for the IP.
         console.log(ipAddress);
     }
 
