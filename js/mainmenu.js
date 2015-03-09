@@ -35,8 +35,12 @@ Slider.MainMenu.prototype.create = function() {
 
 // Get the IP address from the textbox.
 Slider.MainMenu.prototype.setIP = function() {
-    Slider.ipAddress = document.getElementById("ip_textbox").value; // input_ip_address is the textbox that asks for the IP.
-    console.log("IP address set to " + Slider.ipAddress);
+    if (document.getElementById("ip_textbox").value.toString().contains("http://")) {
+        Slider.ipAddress = document.getElementById("ip_textbox").value; // input_ip_address is the textbox that asks for the IP.
+    } else {
+        // append http:// in front if the students forgets to
+        Slider.ipAddress = "http://" + document.getElementById("ip_textbox").value.toString(); // input_ip_address is the textbox that asks for the IP.
+    }
 };
 
 // Get the JSON data string from the IP address.
@@ -57,6 +61,7 @@ Slider.MainMenu.prototype.connect = function() {
         // validate the IP then start the game.
         sensorJSON = JSON.parse(this.httpGet(Slider.ipAddress)).sensors;
         $("#ip_textbox").hide();
+        console.log("Validated IP address " + Slider.ipAddress + ". Starting game now");
         this.state.start('Game');
     } catch (e) {
         // notify the user that the address invalid
