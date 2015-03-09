@@ -5,7 +5,7 @@ Slider.Preloader = function(game) {
 
 Slider.Preloader.prototype.preload = function() {
     console.log("Preloading game assets.");
-    
+
     this.stage.backgroundColor = '#B4D9E7';
 
     this.load.image('sky', 'assets/sky.png');
