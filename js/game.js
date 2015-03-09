@@ -73,22 +73,25 @@ Slider.Game.prototype.getSensorValue = function() {
 
 Slider.Game.prototype.update = function() {
 
-    if (this.currentGameState == "waitingToPushObject" && this.currentRound === 1) {
+    if (this.currentGameState == "waitingToPushObject" && this.currentRound === 1 /*to prevent multiple pushes. change this later*/) {
         var sensorValue = this.getSensorValue();
-        //console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
+        // console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
 
-        if (sensorValue > this.minSensorValue) {
-           if (this.currMaxValue < sensorValue) {
+        if (sensorValue > this.minSensorValue) { // if sensor value is above threshold
+           if (this.currMaxValue < sensorValue) { // and if sensor value is still increasing, push in progress
+                // pushing object
                 this.currMaxValue = sensorValue;
-                this.physics.arcade.accelerationFromRotation(-Math.PI/2,  this.currMaxValue*700, this.player.body.acceleration);
-                console.log("Moving up by new currMaxValue = " + this.currMaxValue);
             } else {
-               this.player.body.acceleration.set(0);
-               this.currentRound++;
+               // don't push object
+               this.physics.arcade.accelerationFromRotation(-Math.PI/2,  this.currMaxValue*150, this.player.body.acceleration);
+               console.log("Moving up by new currMaxValue = " + this.currMaxValue);
+               this.currentRound++; // go to the next round because the push is over
            }
         } else {
-            this.player.body.acceleration.set(0);
+            this.player.body.acceleration.set(0); // don't push anymore if the sensor value is decreasing
         }
+    } else {
+        this.player.body.acceleration.set(0);
     }
 
     this.frameCount++;
