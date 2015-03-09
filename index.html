@@ -1,4 +1,12 @@
 <!doctype html>
+
+<!-- Credits to the following
+
+Cat Oops icon:
+https://www.iconfinder.com/icons/182515/cat_tied_yarn_icon#size=128
+
+-->
+
 <html lang="en">
 
 <head>
@@ -7,15 +15,12 @@
 
     <!-- include phaser and jquery -->
     <script type="text/javascript" src="js/phaser.min.js"></script>
+    <script type="text/javascript" src="js/sweet-alert.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
     <!-- google fonts -->
     <script type="text/javascript">
-
-        // = = = = = = = = = = = = = = = = =
-        // Fonts
-        // = = = = = = = = = = = = = = = = =
         WebFontConfig = {
             google: {
                 families: ['Orbitron:700:latin']
@@ -46,6 +51,7 @@
 
     <!-- include CSS -->
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
 
 </head>
 
@@ -53,11 +59,7 @@
 
     <script type="text/javascript">
         // initialize game
-        var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game'/*, {
-            preload: preload,
-            create: create,
-            update: update
-        }*/);
+        var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
 
         // add game states (aka the game screens)
         game.state.add('Boot', Slider.Boot); // boot the game
@@ -74,6 +76,12 @@
         console.log("Starting game boot.");
     </script>
 
-    <input id="ip_textbox" type="text">
+
+    <!-- DOM ELEMENTS HERE -->
+    <input id = "ip_textbox" type = "text" value = "http://">
+    <audio id = "keypress">
+        <source src="assets/sounds/keypress.wav">
+    </audio>
+
 </body>
 </html>

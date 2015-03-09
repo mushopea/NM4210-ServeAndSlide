@@ -22,7 +22,7 @@ body {
 }
 
 #ip_textbox {
-	/*visibility: hidden;*/
+	display: none;
 	z-index: 999;
 	border: 1px solid #848484;
 	-webkit-border-radius: 30px;
@@ -37,4 +37,10 @@ body {
 	font-weight: bold;
 	font-size: 30px;
 	color: #2ebaff;
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	right: 0;
+	top: 200px;
 }
