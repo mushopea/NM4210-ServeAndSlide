@@ -3,9 +3,18 @@ Slider.Game = function(game) {
     // Slider.Game local variables
     // = = = = = = = = = = = = = = = = =
     console.log("Initializing local game variables.");
-    // item values
-    this.frameCount = 0;
 
+    // game variables
+    this.frameCount = 0;
+    this.gameStates = ["waitingForNextPlayer", "waitingToPushObject", "endGame"];
+    this.currentGameState = this.gameStates[1];
+    this.currentRound = 1;
+    this.lastRound = 5;
+
+    // game assets
+    this.player = null;
+
+    // item values
     this.numberOfItems = 5;
     this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Water Jug", "Beer Barrel"];
     this.itemWeight = [300, 500, 700, 1000, 2000];
@@ -22,11 +31,15 @@ Slider.Game.prototype.create = function() {
     // Game world
     // = = = = = = = = = = = = = = = = =
 
-    //  We're going to be using physics, so enable the Arcade Physics system
-    this.physics.startSystem(Phaser.Physics.ARCADE);
+    // We're going to be using physics, so enable the Arcade Physics system
+    this.physics.startSystem(Phaser.Physics.P2JS);
 
-    //  A simple background for our game
+    // A simple background for our game
     this.add.sprite(0, 0, 'sky');
+
+    // Player sprite
+    this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'beerBarrel');
+    this.physics.p2.enable(this.player);
 }
 
 
@@ -53,8 +66,16 @@ Slider.Game.prototype.getSensorValue = function() {
 };
 
 Slider.Game.prototype.update = function() {
-    var sensorValue = this.getSensorValue();
-    console.log("For update " + this.frameCount + " sensor value is " + sensorValue);
+
+    if (this.currentGameState == "waitingToPushObject") {
+        var sensorValue = this.getSensorValue();
+        console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
+
+        if (sensorValue > 0) {
+            this.player.body.moveUp(sensorValue * 100);
+        }
+    }
+
 
     this.frameCount++;
 }
