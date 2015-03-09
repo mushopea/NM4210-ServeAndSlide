@@ -1,6 +1,26 @@
 Slider.Preloader = function(game) {
     Slider.GAME_WIDTH = 800;
     Slider.GAME_HEIGHT = 600;
+
+    // = = = = = = = = = = = = = = = = =
+    // Variables shared between states
+    // = = = = = = = = = = = = = = = = =
+    console.log("Adding global variables.");
+
+    // sensor data
+    Slider.ipAddress = "";
+
+    // game variables and limits
+    Slider.MAX_NUMBER_OF_PLAYERS = 5;
+    Slider.NUMBER_OF_ROUNDS = 5;
+    Slider.numberOfPlayers = 1;
+
+    // player scores
+    Slider.scores = [];
+    for (i = 0; i < Slider.numberOfPlayers; i++) {
+        Slider.scores.push(0);
+    }
+
 };
 
 Slider.Preloader.prototype.preload = function() {
@@ -9,9 +29,6 @@ Slider.Preloader.prototype.preload = function() {
     this.stage.backgroundColor = '#B4D9E7';
 
     this.load.image('sky', 'assets/sky.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 
     // load item images
     this.load.image('teaCup', 'assets/300.png');
