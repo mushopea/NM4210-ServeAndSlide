@@ -82,16 +82,16 @@ Slider.Game.prototype.update = function() {
                 // pushing object
                 this.currMaxValue = sensorValue;
             } else {
-               // don't push object
+               // value has gone past its peak, time to push the max value
                this.physics.arcade.accelerationFromRotation(-Math.PI/2,  this.currMaxValue*450, this.player.body.acceleration);
                console.log("Moving up by new currMaxValue = " + this.currMaxValue);
                this.currentRound++; // go to the next round because the push is over
            }
         } else {
-            this.player.body.acceleration.set(0); // don't push anymore if the sensor value is decreasing
+            this.player.body.acceleration.set(0); // stop moving, don't do anything if the sensor value is too low
         }
     } else {
-        this.player.body.acceleration.set(0);
+        this.player.body.acceleration.set(0); // stop moving if the round is over.
     }
 
     this.frameCount++;
