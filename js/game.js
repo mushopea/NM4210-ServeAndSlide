@@ -18,6 +18,8 @@ Slider.Game = function(game) {
     this.minSensorValue = 3;
     this.maxSensorValue = 20;
     this.currMaxValue = 0;
+    this.avgSensorValue = 0;
+    this.numberOfValuesMeasured = 0;
 
     // item values
     this.numberOfItems = 5;
@@ -80,11 +82,13 @@ Slider.Game.prototype.update = function() {
 
         if (magnitude > this.minSensorValue) { // if sensor value is above threshold
            if (this.currMaxValue < magnitude) { // and if sensor value is still increasing, push in progress
-                // pushing object
-                this.currMaxValue = magnitude;
+               // pushing object
+               this.currMaxValue = magnitude;
+               //this.numberOfValuesMeasured++;
+               //this.avgSensorValue = ((this.avgSensorValue * (this.numberOfValuesMeasured - 1)) + this.currMaxValue)/this.numberOfValuesMeasured;
             } else {
                // value has gone past its peak, time to push the max value
-               this.physics.arcade.accelerationFromRotation(-Math.PI/2,  magnitude*250, this.player.body.acceleration);
+               this.physics.arcade.accelerationFromRotation(-Math.PI/2,  this.currMaxValue * 150, this.player.body.acceleration);
                console.log("Moving up by new currMaxValue = " + this.currMaxValue);
                this.currentRound++; // go to the next round because the push is over
            }
