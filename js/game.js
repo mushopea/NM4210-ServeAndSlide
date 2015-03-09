@@ -83,7 +83,7 @@ Slider.Game.prototype.update = function() {
                 this.currMaxValue = sensorValue;
             } else {
                // don't push object
-               this.physics.arcade.accelerationFromRotation(-Math.PI/2,  this.currMaxValue*150, this.player.body.acceleration);
+               this.physics.arcade.accelerationFromRotation(-Math.PI/2,  this.currMaxValue*450, this.player.body.acceleration);
                console.log("Moving up by new currMaxValue = " + this.currMaxValue);
                this.currentRound++; // go to the next round because the push is over
            }
