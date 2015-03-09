@@ -5,18 +5,26 @@
     <meta charset="UTF-8" />
     <title>Slide 'n' Serve</title>
 
-    <!-- Global Variables -->
-    <script type = "text/javascript">
+    <!-- include phaser and jquery -->
+    <script type="text/javascript" src="js/phaser.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+    <!-- google fonts -->
+    <script type="text/javascript">
+
         // = = = = = = = = = = = = = = = = =
         // Fonts
         // = = = = = = = = = = = = = = = = =
         WebFontConfig = {
-            google: {WWWW
+            google: {
                 families: ['Orbitron:700:latin']
                 // sample usage: this.add.text(70, 380, “TOUCH TO\nSTART”, {font: “30px Orbitron”, align:”center”, fill:”#fff”});
             }
         };
         (function() {
+            console.log("Loading google fonts");
+
             var wf = document.createElement('script');
             wf.src = ('https:'== document.location.protocol ? 'https': 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
             wf.type = 'text / javascript';
@@ -25,30 +33,7 @@
             s.parentNode.insertBefore(wf, s);
         })();
 
-        // = = = = = = = = = = = = = = = = =
-        // Variables shared between states
-        // = = = = = = = = = = = = = = = = =
-        console.log("Adding global variables.");
-
-        // sensor data
-        var ipAddress;
-
-        // game variables and limits
-        var maxNumberOfPlayers = 5;
-        var numberOfPlayers = 1;
-        var numberOfRounds = 5;
-
-        // player scores
-        var scores = [];
-        for (i = 0; i < numberOfPlayers; i++) {
-            scores.push(0);
-        }
-
     </script>
-
-    <!-- include phaser -->
-    <script type="text/javascript" src="js/phaser.min.js"></script>
-
 
     <!-- include all game states -->
     <script type="text/javascript" src="js/boot.js"></script>
@@ -66,30 +51,29 @@
 
 <body>
 
+    <script type="text/javascript">
+        // initialize game
+        var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game'/*, {
+            preload: preload,
+            create: create,
+            update: update
+        }*/);
 
-<script type="text/javascript">
+        // add game states (aka the game screens)
+        game.state.add('Boot', Slider.Boot); // boot the game
+        game.state.add('Preloader', Slider.Preloader); // show loading bar
+        game.state.add('MainMenu', Slider.MainMenu); // ask for IP address
+        game.state.add('PlayerMenu', Slider.PlayerMenu); // ask 1 player or multiplayer
+        game.state.add('MultiplayerMenu', Slider.MultiplayerMenu); // enter number of players for multiplayers
+        game.state.add('Game', Slider.Game); // the game itself
+        game.state.add('GameOver', Slider.GameOver); // end game that shows winner, scores and "restart" button
+        console.log("Game states added.");
 
-    // initialize game
-    var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game'/*, {
-        preload: preload,
-        create: create,
-        update: update
-    }*/);
+        // boot the game
+        game.state.start('Boot');
+        console.log("Starting game boot.");
+    </script>
 
-    // add game states (aka the game screens)
-    game.state.add('Boot', Slider.Boot); // boot the game
-    game.state.add('Preloader', Slider.Preloader); // show loading bar
-    game.state.add('MainMenu', Slider.MainMenu); // ask for IP address
-    game.state.add('PlayerMenu', Slider.PlayerMenu); // ask 1 player or multiplayer
-    game.state.add('MultiplayerMenu', Slider.MultiplayerMenu); // enter number of players for multiplayers
-    game.state.add('Game', Slider.Game); // the game itself
-    game.state.add('GameOver', Slider.GameOver); // end game that shows winner, scores and "restart" button
-    console.log("Game states added.");
-
-    // boot the game
-    game.state.start('Boot');
-    console.log("Starting game boot.");
-
-</script>
+    <input id="ip_textbox" type="text">
 </body>
 </html>

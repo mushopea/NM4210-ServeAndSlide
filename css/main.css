@@ -12,12 +12,7 @@
 	src: url("../assets/fonts/BalsamiqSansItalic.ttf");
 	font-style: italic, oblique;
 }
-@font-face {
-	font-family: "Balsamiq";
-	src: url("../assets/fonts/BalsamiqSansBoldItalic.ttf");
-	font-weight: bold;
-	font-style: italic, oblique;
-}
+
 
 
 body {
@@ -34,8 +29,12 @@ body {
 	-moz-border-radius: 30px;
 	border-radius: 30px;
 	outline: 0;
-	height: 40px;
-	width: 400px;
-	padding-left: 10px;
-	padding-right: 10px;
+	height: 50px;
+	width: 500px;
+	padding-left: 20px;
+	padding-right: 20px;
+	font-family: 'Balsamiq';
+	font-weight: bold;
+	font-size: 30px;
+	color: #2ebaff;
 }
