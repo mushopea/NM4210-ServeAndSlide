@@ -35,7 +35,7 @@ Slider.MainMenu.prototype.create = function() {
 
 // Get the IP address from the textbox.
 Slider.MainMenu.prototype.setIP = function() {
-    if (document.getElementById("ip_textbox").value.toString().contains("http://")) {
+    if (document.getElementById("ip_textbox").value.toString().indexOf("http://") == 0) {
         Slider.ipAddress = document.getElementById("ip_textbox").value; // input_ip_address is the textbox that asks for the IP.
     } else {
         // append http:// in front if the students forgets to
