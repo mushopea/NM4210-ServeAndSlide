@@ -66,7 +66,7 @@ Slider.Game.prototype.getSensorValue = function() {
     // goes through sensor data to find linear acceleration
     for (var m = 0; m < sensorData.length; m++) {
         if (sensorData[m].type == 'linear_acceleration') {
-            return sensorData[m].values[1]; // return lin_acc_y value
+            return sensorData[m].values; // return lin_acc_y value
         }
     }
 };
@@ -75,15 +75,16 @@ Slider.Game.prototype.update = function() {
 
     if (this.currentGameState == "waitingToPushObject" && this.currentRound === 1 /*to prevent multiple pushes. change this later*/) {
         var sensorValue = this.getSensorValue();
+        var magnitude = Math.sqrt((sensorValue[0]*sensorValue[0]) + (sensorValue[1]*sensorValue[1]) + (sensorValue[2]*sensorValue[2]));
         // console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
 
-        if (sensorValue > this.minSensorValue) { // if sensor value is above threshold
-           if (this.currMaxValue < sensorValue) { // and if sensor value is still increasing, push in progress
+        if (magnitude > this.minSensorValue) { // if sensor value is above threshold
+           if (this.currMaxValue < magnitude) { // and if sensor value is still increasing, push in progress
                 // pushing object
-                this.currMaxValue = sensorValue;
+                this.currMaxValue = magnitude;
             } else {
                // value has gone past its peak, time to push the max value
-               this.physics.arcade.accelerationFromRotation(-Math.PI/2,  this.currMaxValue*450, this.player.body.acceleration);
+               this.physics.arcade.accelerationFromRotation(-Math.PI/2,  magnitude*250, this.player.body.acceleration);
                console.log("Moving up by new currMaxValue = " + this.currMaxValue);
                this.currentRound++; // go to the next round because the push is over
            }
