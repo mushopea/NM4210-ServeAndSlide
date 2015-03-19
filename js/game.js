@@ -88,8 +88,11 @@ Slider.Game.prototype.update = function() {
                //this.avgSensorValue = ((this.avgSensorValue * (this.numberOfValuesMeasured - 1)) + this.currMaxValue)/this.numberOfValuesMeasured;
             } else {
                // value has gone past its peak, time to push the max value
-               this.physics.arcade.accelerationFromRotation(-Math.PI/2,  this.currMaxValue * 150, this.player.body.acceleration);
-               console.log("Moving up by new currMaxValue = " + this.currMaxValue);
+              //this.physics.arcade.accelerationFromRotation(-Math.PI / 2, this.currMaxValue * 150, this.player.body.acceleration);
+               if (this.currMaxValue > 11) { this.currMaxValue = 11;}
+               this.player.body.acceleration.set(0, -Math.round(this.currMaxValue) * 400);
+               this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 100, new Phaser.Point(0, -4500));
+               console.log("Moving up by new currMaxValue = " + this.currMaxValue + " with acc: " + this.player.body.acceleration);
                this.currentRound++; // go to the next round because the push is over
            }
         } else {
