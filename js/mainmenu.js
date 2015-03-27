@@ -2,6 +2,7 @@ Slider.MainMenu = function(game){};
 
 Slider.MainMenu.prototype.create = function() {
     // show IP address textbox
+    // to do: make responsive (scale according to window size)
     myself = this;
     $("#ip_textbox").show();
 

@@ -38,11 +38,16 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('title', 'assets/title.png');
 
     // load the sliding cups
-    this.load.image('teaCup', 'assets/300.png');
-    this.load.image('wineGlass', 'assets/500.png');
-    this.load.image('milkBottle', 'assets/700.png');
-    this.load.image('waterJug', 'assets/1000.png');
-    this.load.image('beerBarrel', 'assets/2000.png');
+    this.load.image('teaCup', 'assets/cup-of-tea.png');
+    this.load.image('wineGlass', 'assets/glass-of-wine.png');
+    this.load.image('milkBottle', 'assets/bottle-of-milk.png');
+    this.load.image('waterJug', 'assets/barrel-of-beer.png');
+    this.load.image('beerBarrel', 'assets/jug-of-water.png');
+
+    // load surface tex
+    this.load.image('wood', 'assets/surfaces/wood.jpg');
+    this.load.image('ice', 'assets/surfaces/ice.jpg');
+    this.load.image('carpet', 'assets/surfaces/carpet.png');
 
     // load sprite sheets
     this.load.spritesheet('go', 'assets/button-go.png', 401, 143);
