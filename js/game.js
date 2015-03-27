@@ -23,9 +23,9 @@ Slider.Game = function(game) {
 
     // item values
     this.numberOfItems = 5;
-    this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Water Jug", "Beer Barrel"];
+    this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Beer Bottle", "Water Jug"];
     this.itemWeight = [100, 200, 300, 500, 700];
-    this.itemImage = ['teaCup', 'wineGlass', 'milkBottle', 'waterJug', 'beerBarrel'];
+    this.itemImage = ['teaCup', 'wineGlass', 'milkBottle', 'beerBottle', 'waterJug'];
 
     // surface values
     this.numberOfSurfaces = 3;

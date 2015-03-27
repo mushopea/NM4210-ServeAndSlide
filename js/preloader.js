@@ -41,13 +41,25 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('teaCup', 'assets/cup-of-tea.png');
     this.load.image('wineGlass', 'assets/glass-of-wine.png');
     this.load.image('milkBottle', 'assets/bottle-of-milk.png');
-    this.load.image('waterJug', 'assets/barrel-of-beer.png');
-    this.load.image('beerBarrel', 'assets/jug-of-water.png');
+    this.load.image('beerBottle', 'assets/barrel-of-beer.png');
+    this.load.image('waterJug', 'assets/jug-of-water.png');
 
     // load surface tex
     this.load.image('wood', 'assets/surfaces/wood.jpg');
     this.load.image('ice', 'assets/surfaces/ice.jpg');
     this.load.image('carpet', 'assets/surfaces/carpet.png');
+
+    // load music
+    game.load.audio('gameover', 'assets/sounds/gameover.mp3');
+    game.load.audio('manypoints', 'assets/sounds/manypointsding.mp3');
+    game.load.audio('points', 'assets/sounds/pointsding.mp3');
+    game.load.audio('sadmeow', 'assets/sounds/sadmeow.mp3');
+    game.load.audio('slide1', 'assets/sounds/slide1.mp3');
+    game.load.audio('slide2', 'assets/sounds/slide2.mp3');
+    game.load.audio('bgm1', 'assets/sounds/bgm2.mp3');
+    game.load.audio('bgm2', 'assets/sounds/bgm3.mp3');
+    game.load.audio('break', 'assets/sounds/break.mp3');
+    game.load.audio('hover', 'assets/sounds/buttonhover.mp3');
 
     // load sprite sheets
     this.load.spritesheet('go', 'assets/button-go.png', 401, 143);
