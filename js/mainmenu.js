@@ -39,10 +39,11 @@ Slider.MainMenu.prototype.create = function() {
     whitecircle.height = Slider.GAME_HEIGHT;
     whitecircle.width = Slider.GAME_WIDTH;
         // title
-    title = this.add.sprite(0, 0, 'starttitle');
-    title.height = 0;
-    title.width = 0;
-    this.add.tween(title).to( { width: Slider.GAME_WIDTH, height: Slider.GAME_HEIGHT }, 1000, Phaser.Easing.Linear.None, true);
+    title = this.add.sprite(0, -500, 'starttitle');
+    title.height =  Slider.GAME_HEIGHT;
+    title.width = Slider.GAME_WIDTH;
+    this.add.tween(title).to( { x: 0, y: 0 }, 1500, Phaser.Easing.Bounce.InOut, true);
+
 
 
 
