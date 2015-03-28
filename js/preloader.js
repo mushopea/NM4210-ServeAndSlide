@@ -49,8 +49,19 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('ice', 'assets/surfaces/ice.jpg');
     this.load.image('carpet', 'assets/surfaces/carpet.png');
 
+    // load square tiles of cups and surfaces
+    this.load.image('cup1tile', 'assets/tiles/cup1_tile.png');
+    this.load.image('cup2tile', 'assets/tiles/cup2_tile.png');
+    this.load.image('cup3tile', 'assets/tiles/cup3_tile.png');
+    this.load.image('cup4tile', 'assets/tiles/cup4_tile.png');
+    this.load.image('cup5tile', 'assets/tiles/cup5_tile.png');
+    this.load.image('surface1tile', 'assets/tiles/surface1_tile.png');
+    this.load.image('surface2tile', 'assets/tiles/surface2_tile.png');
+    this.load.image('surface3tile', 'assets/tiles/surface3_tile.png');
+
+
     // load music
-    game.load.audio('gameover', 'assets/sounds/gameover.mp3');
+    game.load.audio('gameover', 'assets/sounds/gameover.mp3'); // example:    blaster.play();
     game.load.audio('manypoints', 'assets/sounds/manypointsding.mp3');
     game.load.audio('points', 'assets/sounds/pointsding.mp3');
     game.load.audio('sadmeow', 'assets/sounds/sadmeow.mp3');
@@ -62,6 +73,7 @@ Slider.Preloader.prototype.preload = function() {
     game.load.audio('hover', 'assets/sounds/buttonhover.mp3');
 
     // load sprite sheets
+    this.load.spritesheet('cat', 'assets/sprite.png', 313, 459);
     this.load.spritesheet('go', 'assets/button-go.png', 401, 143);
 };
 
