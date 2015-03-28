@@ -45,7 +45,7 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('round', 'assets/catround.png');
     this.load.image('roundfiled', 'assets/catroundfilled.png');
 
-    /*// load the sliding cups
+    // load the sliding cups
     this.load.image('teaCup', 'assets/cup-of-tea.png');
     this.load.image('wineGlass', 'assets/glass-of-wine.png');
     this.load.image('milkBottle', 'assets/bottle-of-milk.png');
@@ -57,7 +57,7 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('ice', 'assets/surfaces/icesurface.png');
     this.load.image('carpet', 'assets/surfaces/carpetsurface.png');
 
-    // load square tiles of cups and surfaces
+    /*// load square tiles of cups and surfaces
     this.load.image('teatile', 'assets/tiles/cup1_tile.png');
     this.load.image('winetile', 'assets/tiles/cup2_tile.png');
     this.load.image('milktile', 'assets/tiles/cup3_tile.png');
@@ -65,9 +65,9 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('watertile', 'assets/tiles/cup5_tile.png');
     this.load.image('woodtile', 'assets/tiles/surface1_tile.png');
     this.load.image('icetile', 'assets/tiles/surface2_tile.png');
-    this.load.image('carpettile', 'assets/tiles/surface3_tile.png');
+    this.load.image('carpettile', 'assets/tiles/surface3_tile.png');*/
 
-    // load music
+    /*// load music
     game.load.audio('gameover', 'assets/sounds/gameover.mp3'); // example:    blaster.play();
     game.load.audio('manypoints', 'assets/sounds/manypointsding.mp3');
     game.load.audio('points', 'assets/sounds/pointsding.mp3');
@@ -80,7 +80,7 @@ Slider.Preloader.prototype.preload = function() {
     game.load.audio('hover', 'assets/sounds/buttonhover.mp3');*/
 
     // load sprite sheets
-    this.load.spritesheet('cat', 'assets/sprite.png', 313, 459);
+    this.load.spritesheet('cat', 'assets/sprite2.png', 205, 301);
     this.load.spritesheet('go', 'assets/button-go.png', 238, 132);
 };
 

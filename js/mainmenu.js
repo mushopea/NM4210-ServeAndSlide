@@ -45,18 +45,15 @@ Slider.MainMenu.prototype.create = function() {
     this.add.tween(title).to( { x: 0, y: 0 }, 1500, Phaser.Easing.Bounce.InOut, true);
 
 
-
-
-
-
-    //this.add.sprite((Slider.GAME_WIDTH-395)/2, 60, 'title');
-
     // add the button that will start the game
     gobutton = this.add.button(Slider.GAME_WIDTH/2, Slider.GAME_HEIGHT/2, 'go', this.connect, this, 1, 0, 2);
     gobutton.height = gobutton.height/2;
     gobutton.width = gobutton.width/2;
     gobutton.x = Slider.GAME_WIDTH/2 - gobutton.width/2;
     gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.5;
+
+    // powered by sensorendipity
+    this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Balsamiq", align: "center", fill:'#ccc'});
 
 };
 

@@ -38,11 +38,33 @@ Slider.Game.prototype.create = function() {
     // Game world
     // = = = = = = = = = = = = = = = = =
 
+    var canvasHeight = Slider.GAME_HEIGHT;
+    var canvasWidth = Slider.GAME_WIDTH;
+
     // We're going to be using physics, so enable the Arcade Physics system
     this.physics.startSystem(Phaser.Physics.ARCADE);
 
     // A simple background for our game
-    this.add.sprite(0, 0, 'sky');
+    room = this.add.sprite(0, 0, 'room');
+    room.height = canvasHeight;
+    room.width = canvasWidth;
+
+    // Cat
+    cat = this.add.sprite(0, 0, 'cat');
+    proportion = cat.height/cat.width;
+    cat.height = cat.height/2;
+    cat.width = cat.height/proportion;
+    cat.x = canvasWidth/2 - cat.width/2;
+    cat.animations.add('idle', [0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 25, true);
+    cat.animations.add('hit', [3,4], 100, true);
+    cat.animations.add('happy', [5,6], 500, true);
+    cat.animations.play("idle");
+
+    // Table
+    table = this.add.sprite(0, 0, 'wood');
+    table.height = canvasHeight;
+    table.width = canvasWidth;
+
 
     // Player sprite
     this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'teaCup');

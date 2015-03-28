@@ -1,18 +1,25 @@
 @font-face {
 	font-family: "Balsamiq";
 	src: url("../assets/fonts/BalsamiqSansRegular.ttf");
+	font-weight: normal;
 }
 @font-face {
 	font-family: "Balsamiq";
 	src: url("../assets/fonts/BalsamiqSansBold.ttf");
 	font-weight: bold;
 }
+
 @font-face {
-	font-family: "Balsamiq";
-	src: url("../assets/fonts/BalsamiqSansItalic.ttf");
-	font-style: italic, oblique;
+	font-family: "Patrick";
+	src: url("../assets/fonts/patrick.ttf");
+	font-weight: normal;
 }
 
+@font-face {
+	font-family: "Fredoka";
+	src: url("../assets/fonts/fredoka.ttf");
+	font-weight: normal;
+}
 
 
 body {
