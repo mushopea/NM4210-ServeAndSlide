@@ -31,11 +31,13 @@ Slider.Preloader.prototype.preload = function() {
     this.load.setPreloadSprite(this.preloadBar);
 
     // stage variables
-    this.stage.backgroundColor = '#B4D9E7';
+    this.stage.backgroundColor = '#dcfaff';
 
     // load game asset images
     this.load.image('sky', 'assets/sky.png');
-    this.load.image('title', 'assets/title.png');
+    this.load.image('startcat', 'assets/startscreen/startcat.png');
+    this.load.image('starttitle', 'assets/startscreen/title.png');
+    this.load.image('startsunray', 'assets/startscreen/sunray.png');
     this.load.image('room', 'assets/background.png');
     this.load.image('speechbubble', 'assets/speech.png');
     this.load.image('round', 'assets/catround.png');
@@ -49,19 +51,19 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('waterJug', 'assets/jug-of-water.png');
 
     // load surface tex
-    this.load.image('wood', 'assets/surfaces/wood.jpg');
-    this.load.image('ice', 'assets/surfaces/ice.jpg');
-    this.load.image('carpet', 'assets/surfaces/carpet.png');
+    this.load.image('wood', 'assets/surfaces/woodsurface.png');
+    this.load.image('ice', 'assets/surfaces/icesurface.png');
+    this.load.image('carpet', 'assets/surfaces/carpetsurface.png');
 
     // load square tiles of cups and surfaces
-    this.load.image('cup1tile', 'assets/tiles/cup1_tile.png');
-    this.load.image('cup2tile', 'assets/tiles/cup2_tile.png');
-    this.load.image('cup3tile', 'assets/tiles/cup3_tile.png');
-    this.load.image('cup4tile', 'assets/tiles/cup4_tile.png');
-    this.load.image('cup5tile', 'assets/tiles/cup5_tile.png');
-    this.load.image('surface1tile', 'assets/tiles/surface1_tile.png');
-    this.load.image('surface2tile', 'assets/tiles/surface2_tile.png');
-    this.load.image('surface3tile', 'assets/tiles/surface3_tile.png');
+    this.load.image('teatile', 'assets/tiles/cup1_tile.png');
+    this.load.image('winetile', 'assets/tiles/cup2_tile.png');
+    this.load.image('milktile', 'assets/tiles/cup3_tile.png');
+    this.load.image('beertile', 'assets/tiles/cup4_tile.png');
+    this.load.image('watertile', 'assets/tiles/cup5_tile.png');
+    this.load.image('woodtile', 'assets/tiles/surface1_tile.png');
+    this.load.image('icetile', 'assets/tiles/surface2_tile.png');
+    this.load.image('carpettile', 'assets/tiles/surface3_tile.png');
 
     // load music
     game.load.audio('gameover', 'assets/sounds/gameover.mp3'); // example:    blaster.play();
@@ -77,7 +79,7 @@ Slider.Preloader.prototype.preload = function() {
 
     // load sprite sheets
     this.load.spritesheet('cat', 'assets/sprite.png', 313, 459);
-    this.load.spritesheet('go', 'assets/button-go.png', 401, 143);
+    this.load.spritesheet('go', 'assets/button-go.png', 238, 132);
 };
 
 Slider.Preloader.prototype.create = function() {

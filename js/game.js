@@ -45,7 +45,7 @@ Slider.Game.prototype.create = function() {
     this.add.sprite(0, 0, 'sky');
 
     // Player sprite
-    this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'beerBarrel');
+    this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'teaCup');
     this.physics.enable(this.player, Phaser.Physics.ARCADE);
     this.player.body.drag.set(100);
 }
