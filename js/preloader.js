@@ -11,8 +11,8 @@ Slider.Preloader = function(game) {
     Slider.ipAddress = "";
 
     // game variables and limits
-    Slider.MAX_NUMBER_OF_PLAYERS = 5;
-    Slider.NUMBER_OF_ROUNDS = 5;
+    Slider.MAX_NUMBER_OF_PLAYERS = 4;
+    Slider.NUMBER_OF_ROUNDS = 3;
     Slider.numberOfPlayers = 1;
 
     // player scores
@@ -82,6 +82,12 @@ Slider.Preloader.prototype.preload = function() {
     // load sprite sheets
     this.load.spritesheet('cat', 'assets/sprite2.png', 205, 301);
     this.load.spritesheet('go', 'assets/button-go.png', 238, 132);
+    this.load.spritesheet('singleplayer', 'assets/singleplayer.png', 280, 352);
+    this.load.spritesheet('multiplayer', 'assets/multiplayer.png', 280, 351);
+    this.load.spritesheet('plus', 'assets/plus.png', 93, 96);
+    this.load.spritesheet('minus', 'assets/minus.png', 93, 96);
+
+
 };
 
 Slider.Preloader.prototype.create = function() {

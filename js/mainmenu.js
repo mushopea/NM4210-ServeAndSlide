@@ -53,7 +53,7 @@ Slider.MainMenu.prototype.create = function() {
     gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.5;
 
     // powered by sensorendipity
-    this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Balsamiq", align: "center", fill:'#ccc'});
+    this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Balsamiq", align: "center", fill:'#666'});
 
 };
 
@@ -90,7 +90,7 @@ Slider.MainMenu.prototype.connect = function() {
         sensorJSON = JSON.parse(this.httpGet(Slider.ipAddress)).sensors;
         $("#ip_textbox").hide();
         console.log("Validated IP address " + Slider.ipAddress + ". Starting game now");
-        this.state.start('Game');
+        this.state.start('PlayerMenu');
     } catch (e) {
         // notify the user that the address invalid
         swal({

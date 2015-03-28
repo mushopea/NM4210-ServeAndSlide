@@ -4,12 +4,31 @@ Slider.Game = function(game) {
     // = = = = = = = = = = = = = = = = =
     console.log("Initializing local game variables.");
 
+    /* **********************************
+    // Reminder: Slider global variables are:
+    Slider.MAX_NUMBER_OF_PLAYERS = 3;
+    Slider.NUMBER_OF_ROUNDS = 5;
+    Slider.numberOfPlayers = 1;
+    *********************************** */
+
+    // item values
+    this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Beer Bottle", "Water Jug"];
+    this.itemWeight = [100, 200, 300, 500, 700];
+    this.itemImage = ['teaCup', 'wineGlass', 'milkBottle', 'beerBottle', 'waterJug'];
+
+    // surface values
+    this.surfaceName = ["wood", "rubber", "ice"];
+    this.surfaceFriction = [0.3, 0.6, 0.05]; // source: http://www.engineeringtoolbox.com/friction-coefficients-d_778.html
+
     // game variables
     this.frameCount = 0;
     this.gameStates = ["waitingForNextPlayer", "waitingToPushObject", "endGame"];
     this.currentGameState = this.gameStates[1];
     this.currentRound = 1;
+    this.currentPlayer = 1;
     this.lastRound = 5;
+    this.currentItem = Math.floor(Math.random() * this.itemName.length);
+    this.currentSurface = Math.floor(Math.random() * this.surfaceName.length);
 
     // game assets
     this.player = null;
@@ -21,16 +40,7 @@ Slider.Game = function(game) {
     this.avgSensorValue = 0;
     this.numberOfValuesMeasured = 0;
 
-    // item values
-    this.numberOfItems = 5;
-    this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Beer Bottle", "Water Jug"];
-    this.itemWeight = [100, 200, 300, 500, 700];
-    this.itemImage = ['teaCup', 'wineGlass', 'milkBottle', 'beerBottle', 'waterJug'];
 
-    // surface values
-    this.numberOfSurfaces = 3;
-    this.surfaceName = ["wood", "rubber", "ice"];
-    this.surfaceFriction = [0.3, 0.6, 0.05]; // source: http://www.engineeringtoolbox.com/friction-coefficients-d_778.html
 }
 
 Slider.Game.prototype.create = function() {
@@ -49,13 +59,15 @@ Slider.Game.prototype.create = function() {
     room.height = canvasHeight;
     room.width = canvasWidth;
 
-    // Cat
+    // Cat sprite
     cat = this.add.sprite(0, 0, 'cat');
     proportion = cat.height/cat.width;
     cat.height = cat.height/2;
     cat.width = cat.height/proportion;
     cat.x = canvasWidth/2 - cat.width/2;
-    cat.animations.add('idle', [0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 25, true);
+
+    // Cat animations
+    cat.animations.add('idle', [0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 30, true);
     cat.animations.add('hit', [3,4], 100, true);
     cat.animations.add('happy', [5,6], 500, true);
     cat.animations.play("idle");
@@ -65,11 +77,13 @@ Slider.Game.prototype.create = function() {
     table.height = canvasHeight;
     table.width = canvasWidth;
 
-
     // Player sprite
     this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'teaCup');
     this.physics.enable(this.player, Phaser.Physics.ARCADE);
     this.player.body.drag.set(100);
+
+    // Go back text
+    goBackText = this.add.text(15, canvasHeight - 35, "< Back to Player Selection", {font: "20px Balsamiq", align: "center", fill:'#fff'});
 }
 
 
