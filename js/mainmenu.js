@@ -22,11 +22,40 @@ Slider.MainMenu.prototype.create = function() {
     });
 
     // display images
-    this.add.sprite(0, 0, 'sky');
+        // sunray
+    sunray = this.add.sprite(0, 0, 'startsunray');
+    sunray.height = Slider.GAME_HEIGHT;
+    sunray.width = Slider.GAME_WIDTH;
+    sunray.alpha = 0;
+    this.add.tween(sunray).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
+        // cat
+    startcat = this.add.sprite(320, 500, 'startcat');
+    var proportion = startcat.height/startcat.width;
+    startcat.height = Slider.GAME_HEIGHT/2.5;
+    startcat.width = startcat.height/proportion;
+    this.add.tween(startcat).to( { y: 50 }, 1300, Phaser.Easing.Cubic.Out, true);
+        // white circle
+    whitecircle = this.add.sprite(0, 0, 'startwhitecircle');
+    whitecircle.height = Slider.GAME_HEIGHT;
+    whitecircle.width = Slider.GAME_WIDTH;
+        // title
+    title = this.add.sprite(0, 0, 'starttitle');
+    title.height = 0;
+    title.width = 0;
+    this.add.tween(title).to( { width: Slider.GAME_WIDTH, height: Slider.GAME_HEIGHT }, 1000, Phaser.Easing.Linear.None, true);
+
+
+
+
+
     //this.add.sprite((Slider.GAME_WIDTH-395)/2, 60, 'title');
 
     // add the button that will start the game
-    this.add.button(Slider.GAME_WIDTH/2 - 401/2, Slider.GAME_HEIGHT/2 - 143/2, 'go', this.connect, this, 1, 0, 2);
+    gobutton = this.add.button(Slider.GAME_WIDTH/2, Slider.GAME_HEIGHT/2, 'go', this.connect, this, 1, 0, 2);
+    gobutton.height = gobutton.height/2;
+    gobutton.width = gobutton.width/2;
+    gobutton.x = Slider.GAME_WIDTH/2 - gobutton.width/2;
+    gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.5;
 
 };
 

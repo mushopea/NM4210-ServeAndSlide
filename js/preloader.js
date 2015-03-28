@@ -38,12 +38,14 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('startcat', 'assets/startscreen/startcat.png');
     this.load.image('starttitle', 'assets/startscreen/title.png');
     this.load.image('startsunray', 'assets/startscreen/sunray.png');
+    this.load.image('startwhitecircle', 'assets/startscreen/whitecircle.png');
+
     this.load.image('room', 'assets/background.png');
     this.load.image('speechbubble', 'assets/speech.png');
     this.load.image('round', 'assets/catround.png');
     this.load.image('roundfiled', 'assets/catroundfilled.png');
 
-    // load the sliding cups
+    /*// load the sliding cups
     this.load.image('teaCup', 'assets/cup-of-tea.png');
     this.load.image('wineGlass', 'assets/glass-of-wine.png');
     this.load.image('milkBottle', 'assets/bottle-of-milk.png');
@@ -75,7 +77,7 @@ Slider.Preloader.prototype.preload = function() {
     game.load.audio('bgm1', 'assets/sounds/bgm2.mp3');
     game.load.audio('bgm2', 'assets/sounds/bgm3.mp3');
     game.load.audio('break', 'assets/sounds/break.mp3');
-    game.load.audio('hover', 'assets/sounds/buttonhover.mp3');
+    game.load.audio('hover', 'assets/sounds/buttonhover.mp3');*/
 
     // load sprite sheets
     this.load.spritesheet('cat', 'assets/sprite.png', 313, 459);

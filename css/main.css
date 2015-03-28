@@ -29,8 +29,8 @@ body {
 	-moz-border-radius: 30px;
 	border-radius: 30px;
 	outline: 0;
-	height: 50px;
-	width: 500px;
+	height: 8%;
+	width: 40%;
 	padding-left: 20px;
 	padding-right: 20px;
 	font-family: 'Balsamiq';
@@ -42,5 +42,5 @@ body {
 	margin-right: auto;
 	left: 0;
 	right: 0;
-	top: 200px;
+	bottom: 30%;
 }
