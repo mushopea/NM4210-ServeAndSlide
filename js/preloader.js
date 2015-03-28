@@ -36,6 +36,10 @@ Slider.Preloader.prototype.preload = function() {
     // load game asset images
     this.load.image('sky', 'assets/sky.png');
     this.load.image('title', 'assets/title.png');
+    this.load.image('room', 'assets/background.png');
+    this.load.image('speechbubble', 'assets/speech.png');
+    this.load.image('round', 'assets/catround.png');
+    this.load.image('roundfiled', 'assets/catroundfilled.png');
 
     // load the sliding cups
     this.load.image('teaCup', 'assets/cup-of-tea.png');
@@ -58,7 +62,6 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('surface1tile', 'assets/tiles/surface1_tile.png');
     this.load.image('surface2tile', 'assets/tiles/surface2_tile.png');
     this.load.image('surface3tile', 'assets/tiles/surface3_tile.png');
-
 
     // load music
     game.load.audio('gameover', 'assets/sounds/gameover.mp3'); // example:    blaster.play();
