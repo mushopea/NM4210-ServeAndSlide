@@ -71,6 +71,7 @@ Slider.Game.prototype.initPhysics = function() {
 Slider.Game.prototype.initUI = function() {
     this.initRoom();
     this.initCat();
+    this.initBoundarySprite();
     this.updateTable();
     this.updatePlayer();
     this.initQuitBtn();
@@ -97,14 +98,28 @@ Slider.Game.prototype.initCat = function() {
     // Cat sprite
     this.cat = this.add.sprite(0, 0, 'cat');
     this.cat.x = canvasWidth/2 - this.cat.width/2;
+    this.catBottom = this.cat.y + this.cat.height;
 
     // Cat animations
     this.cat.animations.add('idle', [0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 30, true);
-    this.cat.animations.add('hit', [3,4], 100, true);
-    this.cat.animations.add('happy', [5,6], 500, true);
+    this.cat.animations.add('hit', [3,4], 6, true);
+    this.cat.animations.add('happy', [5,6], 2, true);
     this.cat.animations.play("idle");
 }
 
+Slider.Game.prototype.initBoundarySprite = function() {
+    if (this.boundarySprite) {
+        this.boundarySprite.destroy();
+    }
+
+    // Player sprite properties
+    this.boundarySprite = this.add.sprite(0, 0, 'round');
+    this.boundarySprite.x = game.world.centerX;
+    this.boundarySprite.y = this.cat.y + 120;
+    this.boundarySprite.alpha = 0;
+    this.boundarySprite.anchor.set(0.5);
+    this.physics.enable(this.boundarySprite, Phaser.Physics.ARCADE);
+}
 
 Slider.Game.prototype.initScoreboard = function() {
     //  Score board
@@ -157,7 +172,6 @@ Slider.Game.prototype.shutdown = function() {
     if (this.speechbubble) { this.speechbubble.destroy(); }
     if (this.quitButton) { this.quitButton.destroy(); }
 }
-
 
 Slider.Game.prototype.onClickQuitButton = function() {
     // to do: open a ARE YOU FUCKING SURE window.
@@ -325,9 +339,51 @@ Slider.Game.prototype.getSensorValue = function() {
     }
 };
 
+// = = = = = = = = = = = = = = = = =
+// State changing
+// = = = = = = = = = = = = = = = = =
+
+Slider.Game.prototype.showScore = function() {
+
+}
+
+Slider.Game.prototype.changeCatAnimation = function() {
+    game.physics.arcade.overlap(this.player, this.boundarySprite, function() {
+        console.log("cat been hit");
+        this.cat.animations.play("hit");
+        this.player.destroy();
+    }, null, this);
+    
+    if (this.player.body.velocity.y === 0) {
+        console.log("item slid success. cat happy");
+        this.cat.animations.play("happy");
+    }
+}
+
+Slider.Game.prototype.goToNextRound = function() {
+    this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function () {
+        if (this.currentRound < Slider.NUMBER_OF_ROUNDS) {
+            this.currentRound++; // go to the next round because the push is over
+            console.log(this.currentRound + "<-- curr round increment to");
+        } else {
+            this.currentGameState = "endGame";
+        }
+
+        this.currentItem = Math.floor(Math.random() * this.itemName.length);
+        this.currentSurface = Math.floor(Math.random() * this.surfaceName.length);
+        this.updateScoreboard();
+        this.updateTable();
+        this.updatePlayer();
+        this.updateSpeech();
+        this.cat.animations.play("idle");
+        this.currentGameState = "waitingToPushObject";
+    }, this); //esc to quit
+
+}
+
 Slider.Game.prototype.update = function() {
 
-    if (this.currentGameState == "waitingToPushObject" && this.currentRound === 1 /*to prevent multiple pushes. change this later*/) {
+    if (this.currentGameState == "waitingToPushObject") {
         var sensorValue = this.getSensorValue();
         var magnitude = Math.sqrt((sensorValue[0]*sensorValue[0]) + (sensorValue[1]*sensorValue[1]) + (sensorValue[2]*sensorValue[2]));
         // console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
@@ -340,16 +396,25 @@ Slider.Game.prototype.update = function() {
                if (this.currMaxValue > 11) { // limit the speed
                    this.currMaxValue = 11;
                }
+
                this.player.body.acceleration.set(0, -Math.round(this.currMaxValue) * 400 * 2);
                this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 100 * 2, new Phaser.Point(0, -4500 * 2));
                console.log("Moving up by new currMaxValue = " + this.currMaxValue + " with acc: " + this.player.body.acceleration);
+
                if (this.gestureguide) { this.gestureguide.destroy(); }
-               this.currentRound++; // go to the next round because the push is over
+               this.goToNextRound();
+               this.currentGameState = "postRound";
            }
         } else {
             this.player.body.acceleration.set(0); // stop moving, don't do anything if the sensor value is too low
         }
-    } else {
+
+    } else if (this.currentGameState == "postRound") {
+        this.player.body.acceleration.set(0);
+        this.changeCatAnimation();
+        this.showScore();
+
+    } else if (this.currentGameState == "waitingForNextPlayer") {
         this.player.body.acceleration.set(0); // stop moving if the round is over.
     }
 

@@ -34,7 +34,6 @@ Slider.Preloader.prototype.preload = function() {
     this.stage.backgroundColor = '#dcfaff';
 
     // load game asset images
-    this.load.image('sky', 'assets/sky.png');
     this.load.image('startcat', 'assets/startscreen/startcat.png');
     this.load.image('starttitle', 'assets/startscreen/title.png');
     this.load.image('startsunray', 'assets/startscreen/sunray.png');
