@@ -353,7 +353,7 @@ Slider.Game.prototype.changeCatAnimation = function() {
         this.cat.animations.play("hit");
         this.player.destroy();
     }, null, this);
-    
+
     if (this.player.body.velocity.y === 0) {
         console.log("item slid success. cat happy");
         this.cat.animations.play("happy");
@@ -375,6 +375,7 @@ Slider.Game.prototype.goToNextRound = function() {
         this.updateTable();
         this.updatePlayer();
         this.updateSpeech();
+        this.currMaxValue = 0;
         this.cat.animations.play("idle");
         this.currentGameState = "waitingToPushObject";
     }, this); //esc to quit
@@ -397,6 +398,7 @@ Slider.Game.prototype.update = function() {
                    this.currMaxValue = 11;
                }
 
+               this.player.body.velocity.y = 0;
                this.player.body.acceleration.set(0, -Math.round(this.currMaxValue) * 400 * 2);
                this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 100 * 2, new Phaser.Point(0, -4500 * 2));
                console.log("Moving up by new currMaxValue = " + this.currMaxValue + " with acc: " + this.player.body.acceleration);
