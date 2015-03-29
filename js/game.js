@@ -58,17 +58,12 @@ Slider.Game.prototype.create = function() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
 
     // A simple background for our game
-    if (this.room) { this.room.destroy(); }
     this.room = this.add.sprite(0, 0, 'room');
     this.room.height = canvasHeight;
     this.room.width = canvasWidth;
 
     // Cat sprite
-    if (this.cat) { this.cat.destroy(); }
     this.cat = this.add.sprite(0, 0, 'cat');
-    proportion = this.cat.height/this.cat.width;
-    this.cat.height = this.cat.height/2;
-    this.cat.width = this.cat.height/proportion;
     this.cat.x = canvasWidth/2 - this.cat.width/2;
 
     // Cat animations
@@ -78,7 +73,6 @@ Slider.Game.prototype.create = function() {
     this.cat.animations.play("idle");
 
     // Table
-    if (this.table) { this.table.destroy(); }
     this.table = this.add.sprite(0, 0, 'wood');
     this.table.height = canvasHeight;
     this.table.width = canvasWidth;
@@ -89,18 +83,39 @@ Slider.Game.prototype.create = function() {
     this.player.body.drag.set(100);
 
     // Score board
-    this.scoreboardHeight = 150;
+    this.scoreboardHeight = 300;
+    this.scoreboardWidth = 400;
     for (var i = 0; i < Slider.numberOfPlayers; i++) {
-        this.scoreBoardHeight+=50;
+        this.scoreboardHeight+=60;
     }
     this.scoreboard = this.add.graphics(0, 0);
+    this.scoreboard.beginFill(0xFFFFFF, 1);
+    this.scoreboard.bounds = new PIXI.Rectangle(0, 0, this.scoreboardWidth, this.scoreboardHeight);
+    this.scoreboard.drawRect(0, 0, this.scoreboardWidth, this.scoreboardHeight);
+    this.scoreboard.alpha = 0.8;
+
+    // Score board game round info
+    this.updateScoreboard();
 
     // Quit button
-    quitButton = this.add.button(800, 600, 'quit', this.onClickQuitButton, this, 0, 0, 1);
-    quitButton.x = canvasWidth - quitButton.width-5;
-    quitButton.y = canvasHeight - quitButton.height-5;
+    this.quitButton = this.add.button(800, 600, 'quit', this.onClickQuitButton, this, 0, 0, 1);
+    this.quitButton.height = this.quitButton.height * 2;
+    this.quitButton.width = this.quitButton.width * 2;
+    this.quitButton.x = canvasWidth - this.quitButton.width-5;
+    this.quitButton.y = canvasHeight - this.quitButton.height-5;
     this.game.input.keyboard.addKey(Phaser.Keyboard.ESC).onDown.add(function () { this.onClickQuitButton(); }, this); //esc to quit
 }
+
+Slider.Game.prototype.shutdown = function() {
+    console.log("Game shutdown commencing. Destroying assets.");
+    if (this.room) { this.room.destroy(); }
+    if (this.cat) { this.cat.destroy(); }
+    if (this.table) { this.table.destroy(); }
+    if (this.player) { this.player.destroy(); }
+    if (this.scoreboard) { this.scoreboard.destroy(); }
+    if (this.quitButton) { this.quitButton.destroy(); }
+}
+
 
 Slider.Game.prototype.onClickQuitButton = function() {
     // to do: open a ARE YOU FUCKING SURE window.
@@ -109,6 +124,25 @@ Slider.Game.prototype.onClickQuitButton = function() {
     this.game.time.events.remove(this.timer);
     this.state.start('QuitGame');
 }
+
+// update scoreboard
+Slider.Game.prototype.updateScoreboard = function() {
+    if (this.roundText) { this.roundText.destroy(); }
+    if (this.roundCatGroup) { this.roundCatGroup.destroy(); }
+
+    var padding = 15;
+    var roundPadding = 75;
+    this.roundText = this.add.text(padding, padding, "Round " + this.currentRound + " / " + Slider.NUMBER_OF_ROUNDS, {font: "40px Fredoka", align: "center", fill:'#000'});
+
+    this.roundCatGroup = this.add.group();
+    for (var i = 0; i < this.currentRound; i++) {
+        this.roundCatGroup.create(padding + i*roundPadding, this.roundText.x + this.roundText.height + padding/2, 'roundfilled');
+    }
+    for (var j = 0; j < Slider.NUMBER_OF_ROUNDS - this.currentRound; j++) {
+        this.roundCatGroup.create(padding + j*roundPadding + this.currentRound*roundPadding, this.roundText.x + this.roundText.height + padding/2, 'round');
+    }
+}
+
 
 // Get the JSON data string from the IP address.
 Slider.Game.prototype.httpGet = function(theUrl) {
@@ -148,8 +182,8 @@ Slider.Game.prototype.update = function() {
                if (this.currMaxValue > 11) { // limit the speed
                    this.currMaxValue = 11;
                }
-               this.player.body.acceleration.set(0, -Math.round(this.currMaxValue) * 400);
-               this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 100, new Phaser.Point(0, -4500));
+               this.player.body.acceleration.set(0, -Math.round(this.currMaxValue) * 400 * 2);
+               this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 100 * 2, new Phaser.Point(0, -4500 * 2));
                console.log("Moving up by new currMaxValue = " + this.currMaxValue + " with acc: " + this.player.body.acceleration);
                this.currentRound++; // go to the next round because the push is over
            }

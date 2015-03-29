@@ -1,6 +1,6 @@
 Slider.Preloader = function(game) {
-    Slider.GAME_WIDTH = 800;
-    Slider.GAME_HEIGHT = 600;
+    Slider.GAME_WIDTH = 1600;
+    Slider.GAME_HEIGHT = 1200;
 
     // = = = = = = = = = = = = = = = = =
     // Variables shared between states
@@ -12,7 +12,7 @@ Slider.Preloader = function(game) {
 
     // game variables and limits
     Slider.MAX_NUMBER_OF_PLAYERS = 4;
-    Slider.NUMBER_OF_ROUNDS = 3;
+    Slider.NUMBER_OF_ROUNDS = 5;
     Slider.numberOfPlayers = 1;
 
     // player scores
@@ -43,7 +43,7 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('room', 'assets/background.png');
     this.load.image('speechbubble', 'assets/speech.png');
     this.load.image('round', 'assets/catround.png');
-    this.load.image('roundfiled', 'assets/catroundfilled.png');
+    this.load.image('roundfilled', 'assets/catroundfilled.png');
 
     // load the sliding cups
     this.load.image('teaCup', 'assets/cup-of-tea.png');

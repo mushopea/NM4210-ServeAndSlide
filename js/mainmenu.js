@@ -32,11 +32,12 @@ Slider.MainMenu.prototype.create = function() {
     this.sunray.alpha = 0;
     this.add.tween(this.sunray).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
         // cat
-    this.startcat = this.add.sprite(320, 500, 'startcat');
+    this.startcat = this.add.sprite(game.world.centerX, 1600, 'startcat');
+    this.startcat.anchor.set(0.5);
     var proportion = this.startcat.height/this.startcat.width;
-    this.startcat.height = Slider.GAME_HEIGHT/2.5;
+    this.startcat.height = Slider.GAME_HEIGHT/2;
     this.startcat.width = this.startcat.height/proportion;
-    this.add.tween(this.startcat).to( { y: 50 }, 1300, Phaser.Easing.Cubic.Out, true);
+    this.add.tween(this.startcat).to( { y: game.world.centerY - this.startcat.height/2 }, 1300, Phaser.Easing.Cubic.Out, true);
         // white circle
     this.whitecircle = this.add.sprite(0, 0, 'startwhitecircle');
     this.whitecircle.height = Slider.GAME_HEIGHT;
@@ -49,17 +50,16 @@ Slider.MainMenu.prototype.create = function() {
 
     // add the button that will start the game
     this.gobutton = this.add.button(Slider.GAME_WIDTH/2, Slider.GAME_HEIGHT/2, 'go', this.connect, this, 1, 0, 2);
-    this.gobutton.height = this.gobutton.height/2;
-    this.gobutton.width = this.gobutton.width/2;
+
     this.gobutton.x = Slider.GAME_WIDTH/2 - this.gobutton.width/2;
     this.gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.5;
 
     // powered by sensorendipity
-    this.sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Fredoka", align: "center", fill:'#666'});
+    this.sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "32px Fredoka", align: "center", fill:'#666'});
     this.sensorendipity.alpha = 0;
     game.time.events.add(1000, function(){
         this.sensorendipity = null;
-        this.sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Fredoka", align: "center", fill:'#666'});
+        this.sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-32, "Powered by Sensorendipity", {font: "32px Fredoka", align: "center", fill:'#666'});
         this.sensorendipity.alpha = 0;
         this.sensorendipity.inputEnabled = true;
         this.sensorendipity.events.onInputOver.add(function(item) {item.fill = "#2ebaff";}, this);
@@ -77,6 +77,10 @@ Slider.MainMenu.prototype.destroyAssets = function() {
     if (this.whitecircle) { this.whitecircle.destroy(); }
     if (this.goButton) { this.goButton.destroy(); }
     if (this.sensorendipity) { this.sensorendipity.destroy(); }
+}
+
+Slider.MainMenu.prototype.shutdown = function() {
+    this.destroyAssets();
 }
 
 // = = = = = = = = = = = = = = = = =

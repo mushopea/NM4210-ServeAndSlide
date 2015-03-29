@@ -7,8 +7,14 @@ Slider.PlayerMenu.prototype.create = function() {
     if (this.singleButton) { this.singleButton.destroy(); }
     if (this.multiButton) { this.multiButton.destroy(); }
 
-    this.singleButton = this.add.button(80, 100, 'singleplayer', this.goToGame, this, 1, 0, 1);
-    this.multiButton = this.add.button(Slider.GAME_WIDTH - 360, 100, 'multiplayer', this.goToMultiplayerMenu, this, 1, 0, 1);
+    this.singleButton = this.add.button(100, 255, 'singleplayer', this.goToGame, this, 1, 0, 1);
+    this.multiButton = this.add.button(0, 255, 'multiplayer', this.goToMultiplayerMenu, this, 1, 0, 1);
+
+    this.singleButton.height = this.singleButton.height * 2;
+    this.singleButton.width = this.singleButton.width * 2;
+    this.multiButton.height = this.multiButton.height * 2;
+    this.multiButton.width = this.multiButton.width * 2;
+    this.multiButton.x = Slider.GAME_WIDTH - 100 - this.multiButton.width;
 }
 
 Slider.PlayerMenu.prototype.goToGame = function() {
