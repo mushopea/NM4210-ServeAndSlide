@@ -349,13 +349,11 @@ Slider.Game.prototype.showScore = function() {
 
 Slider.Game.prototype.changeCatAnimation = function() {
     game.physics.arcade.overlap(this.player, this.boundarySprite, function() {
-        console.log("cat been hit");
         this.cat.animations.play("hit");
         this.player.destroy();
     }, null, this);
 
     if (this.player.body.velocity.y === 0) {
-        console.log("item slid success. cat happy");
         this.cat.animations.play("happy");
     }
 }
@@ -378,6 +376,7 @@ Slider.Game.prototype.goToNextRound = function() {
         this.currMaxValue = 0;
         this.cat.animations.play("idle");
         this.currentGameState = "waitingToPushObject";
+        game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
     }, this); //esc to quit
 
 }
