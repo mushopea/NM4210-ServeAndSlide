@@ -49,18 +49,50 @@ Slider.Game.prototype.create = function() {
     this.currentItem = Math.floor(Math.random() * this.itemName.length);
     this.currentSurface = Math.floor(Math.random() * this.surfaceName.length);
     this.currentGameState = this.gameStates[1];
+    this.currentScores = [];
+    for (var m = 0; m < Slider.numberOfPlayers; m++) {
+        this.currentScores.push(100);
+    }
 
+    this.initPhysics();
+    this.initUI();
+}
+
+Slider.Game.prototype.initPhysics = function() {
+    // We're going to be using physics, so enable the Arcade Physics system
+    this.physics.startSystem(Phaser.Physics.ARCADE);
+
+    // Player sprite properties
+    this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'teaCup');
+    this.physics.enable(this.player, Phaser.Physics.ARCADE);
+    this.player.body.drag.set(100);
+}
+
+// draw all the UI elements
+Slider.Game.prototype.initUI = function() {
+    this.initRoom();
+    this.initCat();
+    this.initTable();
+    this.initQuitBtn();
+    this.initScoreboard();
+    this.initSpeechBubble();
+}
+
+Slider.Game.prototype.initRoom = function() {
     // positioning variables
     var canvasHeight = Slider.GAME_HEIGHT;
     var canvasWidth = Slider.GAME_WIDTH;
-
-    // We're going to be using physics, so enable the Arcade Physics system
-    this.physics.startSystem(Phaser.Physics.ARCADE);
 
     // A simple background for our game
     this.room = this.add.sprite(0, 0, 'room');
     this.room.height = canvasHeight;
     this.room.width = canvasWidth;
+}
+
+Slider.Game.prototype.initCat = function() {
+    // positioning variables
+    var canvasHeight = Slider.GAME_HEIGHT;
+    var canvasWidth = Slider.GAME_WIDTH;
 
     // Cat sprite
     this.cat = this.add.sprite(0, 0, 'cat');
@@ -71,32 +103,37 @@ Slider.Game.prototype.create = function() {
     this.cat.animations.add('hit', [3,4], 100, true);
     this.cat.animations.add('happy', [5,6], 500, true);
     this.cat.animations.play("idle");
+}
+
+Slider.Game.prototype.initTable = function() {
+    // positioning variables
+    var canvasHeight = Slider.GAME_HEIGHT;
+    var canvasWidth = Slider.GAME_WIDTH;
 
     // Table
     this.table = this.add.sprite(0, 0, 'wood');
     this.table.height = canvasHeight;
     this.table.width = canvasWidth;
+}
 
-    // Player sprite
-    this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'teaCup');
-    this.physics.enable(this.player, Phaser.Physics.ARCADE);
-    this.player.body.drag.set(100);
-
-    // Score board
-    this.scoreboardHeight = 300;
+Slider.Game.prototype.initScoreboard = function() {
+    //  Score board
+    this.scoreboardHeight = 200;
     this.scoreboardWidth = 400;
     for (var i = 0; i < Slider.numberOfPlayers; i++) {
-        this.scoreboardHeight+=60;
+        this.scoreboardHeight += 90;
     }
     this.scoreboard = this.add.graphics(0, 0);
     this.scoreboard.beginFill(0xFFFFFF, 1);
     this.scoreboard.bounds = new PIXI.Rectangle(0, 0, this.scoreboardWidth, this.scoreboardHeight);
     this.scoreboard.drawRect(0, 0, this.scoreboardWidth, this.scoreboardHeight);
-    this.scoreboard.alpha = 0.8;
+    this.scoreboard.alpha = 0.6;
 
     // Score board game round info
     this.updateScoreboard();
+}
 
+Slider.Game.prototype.initQuitBtn = function() {
     // Quit button
     this.quitButton = this.add.button(800, 600, 'quit', this.onClickQuitButton, this, 0, 0, 1);
     this.quitButton.height = this.quitButton.height * 2;
@@ -105,6 +142,12 @@ Slider.Game.prototype.create = function() {
     this.quitButton.y = canvasHeight - this.quitButton.height-5;
     this.game.input.keyboard.addKey(Phaser.Keyboard.ESC).onDown.add(function () { this.onClickQuitButton(); }, this); //esc to quit
 }
+
+Slider.Game.prototype.initSpeechBubble = function() {
+
+}
+
+
 
 Slider.Game.prototype.shutdown = function() {
     console.log("Game shutdown commencing. Destroying assets.");
@@ -129,11 +172,20 @@ Slider.Game.prototype.onClickQuitButton = function() {
 Slider.Game.prototype.updateScoreboard = function() {
     if (this.roundText) { this.roundText.destroy(); }
     if (this.roundCatGroup) { this.roundCatGroup.destroy(); }
+    if (this.playerTextGroup) { this.playerTextGroup.destroy(); }
 
-    var padding = 15;
+    // layout values
+    var padding = 20;
+    var topPadding = 30;
     var roundPadding = 75;
-    this.roundText = this.add.text(padding, padding, "Round " + this.currentRound + " / " + Slider.NUMBER_OF_ROUNDS, {font: "40px Fredoka", align: "center", fill:'#000'});
+    var playerY = 210;
+    var playerIncrement = 80;
+    var playerScoreMargin = 280;
 
+    // "Round 1/5"
+    this.roundText = this.add.text(padding, topPadding, "Round " + this.currentRound + " / " + Slider.NUMBER_OF_ROUNDS, {font: "50px Fredoka", align: "center", fill:'#000'});
+
+    // kitty round indicators :D
     this.roundCatGroup = this.add.group();
     for (var i = 0; i < this.currentRound; i++) {
         this.roundCatGroup.create(padding + i*roundPadding, this.roundText.x + this.roundText.height + padding/2, 'roundfilled');
@@ -141,8 +193,25 @@ Slider.Game.prototype.updateScoreboard = function() {
     for (var j = 0; j < Slider.NUMBER_OF_ROUNDS - this.currentRound; j++) {
         this.roundCatGroup.create(padding + j*roundPadding + this.currentRound*roundPadding, this.roundText.x + this.roundText.height + padding/2, 'round');
     }
+
+    // Player and their score
+    this.playerTextGroup = this.add.group();
+    for (var n = 0; n < Slider.numberOfPlayers; n++) {
+        var playerNo = n + 1;
+        txt = this.add.text(padding, playerY + n*playerIncrement, "Player " + playerNo, {font: "40px Fredoka", align: "center", fill:'#000'});
+        this.playerTextGroup.add(txt);
+    }
+    for (var m = 0; m < Slider.numberOfPlayers; m++) {
+        var score = this.currentScores[m];
+        txt = this.add.text(padding + playerScoreMargin, playerY + m*playerIncrement, score, {font: "40px Fredoka", align: "center", fill:'#000'});
+        this.playerTextGroup.add(txt);
+    }
 }
 
+// update cat's speech
+Slider.Game.prototype.updateSpeech = function() {
+
+}
 
 // Get the JSON data string from the IP address.
 Slider.Game.prototype.httpGet = function(theUrl) {

@@ -11,7 +11,7 @@ Slider.MultiplayerMenu.prototype.create = function() {
     this.stage.backgroundColor = '#279dbc';
 
     if (this.chooseText) { this.chooseText.destroy(); }
-    if (this.minusButton) { this.multiButton.destroy(); }
+    if (this.minusButton) { this.minusButton.destroy(); }
     if (this.plusButton) { this.plusButton.destroy(); }
     if (this.gobutton) { this.gobutton.destroy(); }
 

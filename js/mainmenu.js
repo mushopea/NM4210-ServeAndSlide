@@ -50,9 +50,8 @@ Slider.MainMenu.prototype.create = function() {
 
     // add the button that will start the game
     this.gobutton = this.add.button(Slider.GAME_WIDTH/2, Slider.GAME_HEIGHT/2, 'go', this.connect, this, 1, 0, 2);
-
     this.gobutton.x = Slider.GAME_WIDTH/2 - this.gobutton.width/2;
-    this.gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.5;
+    this.gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.7;
 
     // powered by sensorendipity
     this.sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "32px Fredoka", align: "center", fill:'#666'});
