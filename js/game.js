@@ -4,20 +4,13 @@ Slider.Game = function(game) {
     // = = = = = = = = = = = = = = = = =
     console.log("Initializing local game variables.");
 
-    /* **********************************
-    // Reminder: Slider global variables are:
-    Slider.MAX_NUMBER_OF_PLAYERS = 3;
-    Slider.NUMBER_OF_ROUNDS = 5;
-    Slider.numberOfPlayers = 1;
-    *********************************** */
-
     // item values
     this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Beer Bottle", "Water Jug"];
     this.itemWeight = [100, 200, 300, 500, 700];
     this.itemImage = ['teaCup', 'wineGlass', 'milkBottle', 'beerBottle', 'waterJug'];
 
     // surface values
-    this.surfaceName = ["wood", "rubber", "ice"];
+    this.surfaceName = ["wood", "carpet", "ice"];
     this.surfaceFriction = [0.3, 0.6, 0.05]; // source: http://www.engineeringtoolbox.com/friction-coefficients-d_778.html
 
     // game variables
@@ -38,12 +31,9 @@ Slider.Game.prototype.create = function() {
     // = = = = = = = = = = = = = = = = =
     // Game world
     // = = = = = = = = = = = = = = = = =
-    console.log("Game Create function called");
-
-    // initialize game vars
-    this.player = null;
 
     // initialize curr state maintenance vars
+    this.player = null;
     this.currentRound = 1;
     this.currentPlayer = 1;
     this.currentItem = Math.floor(Math.random() * this.itemName.length);
@@ -61,18 +51,15 @@ Slider.Game.prototype.create = function() {
 Slider.Game.prototype.initPhysics = function() {
     // We're going to be using physics, so enable the Arcade Physics system
     this.physics.startSystem(Phaser.Physics.ARCADE);
-
-    // Player sprite properties
-    this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'teaCup');
-    this.physics.enable(this.player, Phaser.Physics.ARCADE);
-    this.player.body.drag.set(100);
 }
+
 
 // draw all the UI elements
 Slider.Game.prototype.initUI = function() {
     this.initRoom();
     this.initCat();
-    this.initTable();
+    this.updateTable();
+    this.updatePlayer();
     this.initQuitBtn();
     this.initScoreboard();
     this.initSpeechBubble();
@@ -91,7 +78,6 @@ Slider.Game.prototype.initRoom = function() {
 
 Slider.Game.prototype.initCat = function() {
     // positioning variables
-    var canvasHeight = Slider.GAME_HEIGHT;
     var canvasWidth = Slider.GAME_WIDTH;
 
     // Cat sprite
@@ -105,16 +91,6 @@ Slider.Game.prototype.initCat = function() {
     this.cat.animations.play("idle");
 }
 
-Slider.Game.prototype.initTable = function() {
-    // positioning variables
-    var canvasHeight = Slider.GAME_HEIGHT;
-    var canvasWidth = Slider.GAME_WIDTH;
-
-    // Table
-    this.table = this.add.sprite(0, 0, 'wood');
-    this.table.height = canvasHeight;
-    this.table.width = canvasWidth;
-}
 
 Slider.Game.prototype.initScoreboard = function() {
     //  Score board
@@ -144,6 +120,7 @@ Slider.Game.prototype.initQuitBtn = function() {
 }
 
 Slider.Game.prototype.initSpeechBubble = function() {
+    // speech bubble
 
 }
 
@@ -167,6 +144,37 @@ Slider.Game.prototype.onClickQuitButton = function() {
     this.game.time.events.remove(this.timer);
     this.state.start('QuitGame');
 }
+
+// update player sprite
+Slider.Game.prototype.updatePlayer = function() {
+    if (this.player) {
+        this.player.destroy();
+    }
+
+    // Player sprite properties
+    this.player = this.add.sprite(0, 0, this.itemImage[this.currentItem]);
+    this.player.x = Slider.GAME_WIDTH/2 - this.player.width/2;
+    this.player.y = Slider.GAME_HEIGHT - 20 - this.player.height;
+    this.physics.enable(this.player, Phaser.Physics.ARCADE);
+    this.player.body.drag.set(100);
+}
+
+// update table
+Slider.Game.prototype.updateTable = function() {
+    if (this.table) {
+        this.table.destroy();
+    }
+
+    // positioning variables
+    var canvasHeight = Slider.GAME_HEIGHT;
+    var canvasWidth = Slider.GAME_WIDTH;
+
+    // Table
+    this.table = this.add.sprite(0, 0, this.surfaceName[this.currentSurface]);
+    this.table.height = canvasHeight;
+    this.table.width = canvasWidth;
+}
+
 
 // update scoreboard
 Slider.Game.prototype.updateScoreboard = function() {
