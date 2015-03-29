@@ -8,12 +8,15 @@ Slider.Game = function(game) {
     this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Beer Bottle", "Water Jug"];
     this.itemWeight = [100, 200, 300, 500, 700];
     this.itemImage = ['teaCup', 'wineGlass', 'milkBottle', 'beerBottle', 'waterJug'];
+    this.itemTile = ['teatile', 'winetile', 'milktile', 'beertile', 'watertile'];
     this.itemMassDescription = ['tiny', 'small', 'medium', 'large', 'very large'];
     this.itemWeightDescription = ["very light", "light", "of normal weight", "heavy", "very heavy"];
     this.itemForceDescription = ["very little", "rather little", "a fair amount of", "quite strong", "very strong"];
 
     // surface values
     this.surfaceName = ["wood", "carpet", "ice"];
+    this.surfaceNameCapital = ["Wood", "Carpet", "Ice"];
+    this.surfaceTile = ['woodtile', 'carpettile', 'icetile'];
     this.surfaceFriction = [0.3, 0.6, 0.05]; // source: http://www.engineeringtoolbox.com/friction-coefficients-d_778.html
     this.surfaceFrictionText = ["Normal", "High", "Low"];
     this.surfaceFrictionEase = ["normally", "with difficulty", "easily"];
@@ -47,7 +50,7 @@ Slider.Game.prototype.create = function() {
     this.currentGameState = this.gameStates[1];
     this.currentScores = [];
     for (var m = 0; m < Slider.numberOfPlayers; m++) {
-        this.currentScores.push(100);
+        this.currentScores.push("0");
     }
 
     this.initPhysics();
@@ -182,7 +185,7 @@ Slider.Game.prototype.updatePlayer = function() {
     this.player.body.drag.set(100);
 
     if (this.currentRound === 1) {
-        this.gestureguide = this.add.sprite(this.player.x + this.player.width + 50, Slider.GAME_HEIGHT - this.player.height - 10 - 200, 'gestureguide');
+        this.gestureguide = this.add.sprite(this.player.x + this.player.width + 30, Slider.GAME_HEIGHT - this.player.height - 10 - 200, 'gestureguide');
         this.gestureguide.animations.add('ani', [0,1], 0.75, true);
         this.gestureguide.animations.play("ani");
     }
@@ -262,13 +265,37 @@ Slider.Game.prototype.updateScoreboard = function() {
 // update cat's speech
 Slider.Game.prototype.updateSpeech = function() {
     var padding = 30;
-    var speechspace = 330;
+    var xpos = padding + this.speechbubble.x + 200;
+    var speechspace = 345;
+    var tilesize = 90;
 
     if (this.speechgroup) { this.speechgroup.destroy(); }
     this.speechgroup = this.add.group();
-    txt = this.add.text(this.speechbubble.x + padding + 200, this.speechbubble.y + padding, "Please slide the " + this.itemName[this.currentItem] + " over to me!", {font: "30px Balsamiq", align: "center", fill:'#666', wordWrap: true, wordWrapWidth: speechspace});
+
+    txt = this.add.text(xpos, this.speechbubble.y + padding, "Please slide the " + this.itemName[this.currentItem] + " over to me!", {font: "30px Balsamiq", align: "center", fill:'#666', wordWrap: true, wordWrapWidth: speechspace});
     this.speechgroup.add(txt);
 
+    itemTile = this.add.sprite(xpos, txt.y + txt.height + padding, this.itemTile[this.currentItem]);
+    itemTile.width = tilesize;
+    itemTile.height = tilesize;
+    this.speechgroup.add(itemTile);
+
+    surfaceTile = this.add.sprite(xpos, itemTile.y + itemTile.height + padding, this.surfaceTile[this.currentSurface]);
+    surfaceTile.width = tilesize;
+    surfaceTile.height = tilesize;
+    this.speechgroup.add(surfaceTile);
+
+    itemName = this.add.text(itemTile.x + itemTile.width + padding, itemTile.y + 7, this.itemName[this.currentItem], {font: "30px Fredoka", align: "center", fill:'#5FBEEE'});
+    this.speechgroup.add(itemName);
+
+    surfaceName = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceTile.y + 7, this.surfaceNameCapital[this.currentSurface] + " surface", {font: "30px Fredoka", align: "center", fill:'#5FBEEE'});
+    this.speechgroup.add(surfaceName);
+
+    itemWeight = this.add.text(itemTile.x + itemTile.width + padding, itemName.y + itemName.height + 10, this.itemWeight[this.currentItem] + " ml", {font: "30px Balsamiq", align: "center", fill:'#666'});
+    this.speechgroup.add(itemWeight);
+
+    surfaceFriction = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceName.y + surfaceName.height + 10, this.surfaceFrictionText[this.currentSurface] + " friction", {font: "30px Balsamiq", align: "center", fill:'#666'});
+    this.speechgroup.add(surfaceFriction);
 }
 
 // = = = = = = = = = = = = = = = = =
