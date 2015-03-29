@@ -28,6 +28,7 @@ https://www.iconfinder.com/icons/182515/cat_tied_yarn_icon#size=128
     <script type="text/javascript" src="js/multiplayermenu.js"></script>
     <script type="text/javascript" src="js/game.js"></script>
     <script type="text/javascript" src="js/gameover.js"></script>
+    <script type="text/javascript" src="js/quitgame.js"></script>
 
     <!-- include CSS -->
     <link rel="stylesheet" href="css/main.css">
@@ -49,6 +50,7 @@ https://www.iconfinder.com/icons/182515/cat_tied_yarn_icon#size=128
         game.state.add('MultiplayerMenu', Slider.MultiplayerMenu); // enter number of players for multiplayers
         game.state.add('Game', Slider.Game); // the game itself
         game.state.add('GameOver', Slider.GameOver); // end game that shows winner, scores and "restart" button
+        game.state.add('QuitGame', Slider.QuitGame); // end game that shows winner, scores and "restart" button
         console.log("Game states added.");
 
         // boot the game
@@ -58,7 +60,7 @@ https://www.iconfinder.com/icons/182515/cat_tied_yarn_icon#size=128
 
 
     <!-- DOM ELEMENTS HERE -->
-    <input id = "ip_textbox" type = "text" value = "http://192.168.123.145:8765">
+    <input id = "ip_textbox" type = "text" value = "http://192.168.0.14:8765">
     <audio id = "keypress">
         <source src="assets/sounds/keypress.wav">
     </audio>

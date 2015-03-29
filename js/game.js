@@ -21,14 +21,9 @@ Slider.Game = function(game) {
     this.surfaceFriction = [0.3, 0.6, 0.05]; // source: http://www.engineeringtoolbox.com/friction-coefficients-d_778.html
 
     // game variables
+    this.xmlHttp = null;
     this.frameCount = 0;
     this.gameStates = ["waitingForNextPlayer", "waitingToPushObject", "endGame"];
-    this.currentGameState = this.gameStates[1];
-    this.currentRound = 1;
-    this.currentPlayer = 1;
-    this.lastRound = 5;
-    this.currentItem = Math.floor(Math.random() * this.itemName.length);
-    this.currentSurface = Math.floor(Math.random() * this.surfaceName.length);
 
     // game assets
     this.player = null;
@@ -37,17 +32,25 @@ Slider.Game = function(game) {
     this.minSensorValue = 3;
     this.maxSensorValue = 20;
     this.currMaxValue = 0;
-    this.avgSensorValue = 0;
-    this.numberOfValuesMeasured = 0;
-
-
 }
 
 Slider.Game.prototype.create = function() {
     // = = = = = = = = = = = = = = = = =
     // Game world
     // = = = = = = = = = = = = = = = = =
+    console.log("Game Create function called");
 
+    // initialize game vars
+    this.player = null;
+
+    // initialize curr state maintenance vars
+    this.currentRound = 1;
+    this.currentPlayer = 1;
+    this.currentItem = Math.floor(Math.random() * this.itemName.length);
+    this.currentSurface = Math.floor(Math.random() * this.surfaceName.length);
+    this.currentGameState = this.gameStates[1];
+
+    // positioning variables
     var canvasHeight = Slider.GAME_HEIGHT;
     var canvasWidth = Slider.GAME_WIDTH;
 
@@ -82,19 +85,33 @@ Slider.Game.prototype.create = function() {
     this.physics.enable(this.player, Phaser.Physics.ARCADE);
     this.player.body.drag.set(100);
 
-    // Go back text
-    goBackText = this.add.text(15, canvasHeight - 35, "< Back to Player Selection", {font: "20px Balsamiq", align: "center", fill:'#fff'});
+    // Score board
+
+
+    // Quit button
+    quitButton = this.add.button(800, 600, 'quit', this.onClickQuitButton, this, 0, 0, 1);
+    quitButton.x = canvasWidth - quitButton.width-5;
+    quitButton.y = canvasHeight - quitButton.height-5;
+    this.game.input.keyboard.addKey(Phaser.Keyboard.ESC).onDown.add(function () { this.onClickQuitButton(); }, this); //esc to quit
 }
 
-
+Slider.Game.prototype.onClickQuitButton = function() {
+    // to do: open a ARE YOU FUCKING SURE window.
+    // Yes = go back to mainmenu.js. No = continue.
+    console.log("Quitting game");
+    this.game.time.events.remove(this.timer);
+    this.state.start('QuitGame');
+}
 
 // Get the JSON data string from the IP address.
 Slider.Game.prototype.httpGet = function(theUrl) {
-    var xmlHttp = null;
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", theUrl, false);
-    xmlHttp.send(null);
-    return xmlHttp.responseText;
+    if (this.xmlHttp) {
+        this.xmlHttp = null;
+    }
+    this.xmlHttp = new XMLHttpRequest();
+    this.xmlHttp.open("GET", theUrl, false);
+    this.xmlHttp.send(null);
+    return this.xmlHttp.responseText;
 };
 
 // Get the accelerometer value! Call this every update
@@ -116,16 +133,14 @@ Slider.Game.prototype.update = function() {
         var magnitude = Math.sqrt((sensorValue[0]*sensorValue[0]) + (sensorValue[1]*sensorValue[1]) + (sensorValue[2]*sensorValue[2]));
         // console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
 
-        if (magnitude > this.minSensorValue) { // if sensor value is above threshold
-           if (this.currMaxValue < magnitude) { // and if sensor value is still increasing, push in progress
-               // pushing object
+        if (magnitude > this.minSensorValue) { // sensor value is above threshold
+           if (this.currMaxValue < magnitude) {
                this.currMaxValue = magnitude;
-               //this.numberOfValuesMeasured++;
-               //this.avgSensorValue = ((this.avgSensorValue * (this.numberOfValuesMeasured - 1)) + this.currMaxValue)/this.numberOfValuesMeasured;
-            } else {
+           } else {
                // value has gone past its peak, time to push the max value
-              //this.physics.arcade.accelerationFromRotation(-Math.PI / 2, this.currMaxValue * 150, this.player.body.acceleration);
-               if (this.currMaxValue > 11) { this.currMaxValue = 11;}
+               if (this.currMaxValue > 11) { // limit the speed
+                   this.currMaxValue = 11;
+               }
                this.player.body.acceleration.set(0, -Math.round(this.currMaxValue) * 400);
                this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 100, new Phaser.Point(0, -4500));
                console.log("Moving up by new currMaxValue = " + this.currMaxValue + " with acc: " + this.player.body.acceleration);

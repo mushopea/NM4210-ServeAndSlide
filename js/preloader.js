@@ -75,7 +75,6 @@ Slider.Preloader.prototype.preload = function() {
     game.load.audio('slide1', 'assets/sounds/slide1.mp3');
     game.load.audio('slide2', 'assets/sounds/slide2.mp3');
     game.load.audio('bgm1', 'assets/sounds/bgm2.mp3');
-    game.load.audio('bgm2', 'assets/sounds/bgm3.mp3');
     game.load.audio('break', 'assets/sounds/break.mp3');
     game.load.audio('hover', 'assets/sounds/buttonhover.mp3');*/
 
@@ -86,6 +85,8 @@ Slider.Preloader.prototype.preload = function() {
     this.load.spritesheet('multiplayer', 'assets/multiplayer.png', 280, 351);
     this.load.spritesheet('plus', 'assets/plus.png', 93, 96);
     this.load.spritesheet('minus', 'assets/minus.png', 93, 96);
+    this.load.spritesheet('quit', 'assets/quit.png', 29, 45);
+
 
 
 };

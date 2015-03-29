@@ -53,7 +53,7 @@ Slider.MainMenu.prototype.create = function() {
     gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.5;
 
     // powered by sensorendipity
-    this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Balsamiq", align: "center", fill:'#666'});
+    sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Balsamiq", align: "center", fill:'#666'});
 
 };
 
