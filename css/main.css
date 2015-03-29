@@ -1,4 +1,10 @@
 @font-face {
+	font-family: "Fredoka";
+	src: url("../assets/fonts/fredoka.ttf");
+	font-weight: normal;
+}
+
+@font-face {
 	font-family: "Balsamiq";
 	src: url("../assets/fonts/BalsamiqSansRegular.ttf");
 	font-weight: normal;
@@ -15,11 +21,6 @@
 	font-weight: normal;
 }
 
-@font-face {
-	font-family: "Fredoka";
-	src: url("../assets/fonts/fredoka.ttf");
-	font-weight: normal;
-}
 
 
 body {

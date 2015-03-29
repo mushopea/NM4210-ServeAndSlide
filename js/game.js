@@ -58,27 +58,30 @@ Slider.Game.prototype.create = function() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
 
     // A simple background for our game
-    room = this.add.sprite(0, 0, 'room');
-    room.height = canvasHeight;
-    room.width = canvasWidth;
+    if (this.room) { this.room.destroy(); }
+    this.room = this.add.sprite(0, 0, 'room');
+    this.room.height = canvasHeight;
+    this.room.width = canvasWidth;
 
     // Cat sprite
-    cat = this.add.sprite(0, 0, 'cat');
-    proportion = cat.height/cat.width;
-    cat.height = cat.height/2;
-    cat.width = cat.height/proportion;
-    cat.x = canvasWidth/2 - cat.width/2;
+    if (this.cat) { this.cat.destroy(); }
+    this.cat = this.add.sprite(0, 0, 'cat');
+    proportion = this.cat.height/this.cat.width;
+    this.cat.height = this.cat.height/2;
+    this.cat.width = this.cat.height/proportion;
+    this.cat.x = canvasWidth/2 - this.cat.width/2;
 
     // Cat animations
-    cat.animations.add('idle', [0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 30, true);
-    cat.animations.add('hit', [3,4], 100, true);
-    cat.animations.add('happy', [5,6], 500, true);
-    cat.animations.play("idle");
+    this.cat.animations.add('idle', [0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 30, true);
+    this.cat.animations.add('hit', [3,4], 100, true);
+    this.cat.animations.add('happy', [5,6], 500, true);
+    this.cat.animations.play("idle");
 
     // Table
-    table = this.add.sprite(0, 0, 'wood');
-    table.height = canvasHeight;
-    table.width = canvasWidth;
+    if (this.table) { this.table.destroy(); }
+    this.table = this.add.sprite(0, 0, 'wood');
+    this.table.height = canvasHeight;
+    this.table.width = canvasWidth;
 
     // Player sprite
     this.player = this.add.sprite(Slider.GAME_WIDTH/2 - 92/2, Slider.GAME_HEIGHT - 129, 'teaCup');
@@ -86,7 +89,11 @@ Slider.Game.prototype.create = function() {
     this.player.body.drag.set(100);
 
     // Score board
-
+    this.scoreboardHeight = 150;
+    for (var i = 0; i < Slider.numberOfPlayers; i++) {
+        this.scoreBoardHeight+=50;
+    }
+    this.scoreboard = this.add.graphics(0, 0);
 
     // Quit button
     quitButton = this.add.button(800, 600, 'quit', this.onClickQuitButton, this, 0, 0, 1);

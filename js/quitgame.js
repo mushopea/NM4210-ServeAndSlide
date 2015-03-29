@@ -5,21 +5,24 @@ Slider.QuitGame.prototype = {
         this.stage.backgroundColor = '#279dbc';
         this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+        if (this.menutxt) { this.menutxt.destroy(); }
+        if (this.plyrtxt) { this.plyrtxt.destroy(); }
+
         // add text links
-        var menutxt = game.add.text(game.world.centerX, game.world.centerY - 50, "Go to Main Menu", { font: "44px Fredoka", fill: "#fff", align: "center" });
-        var plyrtxt = game.add.text(game.world.centerX, game.world.centerY + 50, "Go to Player Select", { font: "44px Fredoka", fill: "#fff", align: "center" });
-        menutxt.anchor.set(0.5);
-        plyrtxt.anchor.set(0.5);
+        this.menutxt = game.add.text(game.world.centerX, game.world.centerY - 50, "Go to Main Menu", { font: "44px Fredoka", fill: "#fff", align: "center" });
+        this.plyrtxt = game.add.text(game.world.centerX, game.world.centerY + 50, "Go to Player Select", { font: "44px Fredoka", fill: "#fff", align: "center" });
+        this.menutxt.anchor.set(0.5);
+        this.plyrtxt.anchor.set(0.5);
 
         // configure hover/press events
-        menutxt.inputEnabled = true;
-        plyrtxt.inputEnabled = true;
-        menutxt.events.onInputOver.add(this.over, this);
-        menutxt.events.onInputOut.add(this.out, this);
-        menutxt.events.onInputDown.add(this.menuTextPressed, this);
-        plyrtxt.events.onInputOut.add(this.out, this);
-        plyrtxt.events.onInputDown.add(this.playerTextPressed, this);
-        plyrtxt.events.onInputOver.add(this.over, this);
+        this.menutxt.inputEnabled = true;
+        this.plyrtxt.inputEnabled = true;
+        this.menutxt.events.onInputOver.add(this.over, this);
+        this.menutxt.events.onInputOut.add(this.out, this);
+        this.menutxt.events.onInputDown.add(this.menuTextPressed, this);
+        this.plyrtxt.events.onInputOut.add(this.out, this);
+        this.plyrtxt.events.onInputDown.add(this.playerTextPressed, this);
+        this.plyrtxt.events.onInputOver.add(this.over, this);
     },
 
     update: function() {

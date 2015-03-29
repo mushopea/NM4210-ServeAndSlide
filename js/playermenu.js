@@ -4,8 +4,11 @@ Slider.PlayerMenu.prototype.create = function() {
     myself = this;
     this.stage.backgroundColor = '#6ed0e3';
 
-    singleButton = this.add.button(80, 100, 'singleplayer', this.goToGame, this, 1, 0, 1);
-    multiButton = this.add.button(Slider.GAME_WIDTH - 360, 100, 'multiplayer', this.goToMultiplayerMenu, this, 1, 0, 1);
+    if (this.singleButton) { this.singleButton.destroy(); }
+    if (this.multiButton) { this.multiButton.destroy(); }
+
+    this.singleButton = this.add.button(80, 100, 'singleplayer', this.goToGame, this, 1, 0, 1);
+    this.multiButton = this.add.button(Slider.GAME_WIDTH - 360, 100, 'multiplayer', this.goToMultiplayerMenu, this, 1, 0, 1);
 }
 
 Slider.PlayerMenu.prototype.goToGame = function() {

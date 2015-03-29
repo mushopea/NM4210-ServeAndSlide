@@ -21,45 +21,63 @@ Slider.MainMenu.prototype.create = function() {
         }
     });
 
+    // if game was restarted, destroy previous assets.
+    this.destroyAssets();
+
     // display images
         // sunray
-    sunray = this.add.sprite(0, 0, 'startsunray');
-    sunray.height = Slider.GAME_HEIGHT;
-    sunray.width = Slider.GAME_WIDTH;
-    sunray.alpha = 0;
-    this.add.tween(sunray).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
+    this.sunray = this.add.sprite(0, 0, 'startsunray');
+    this.sunray.height = Slider.GAME_HEIGHT;
+    this.sunray.width = Slider.GAME_WIDTH;
+    this.sunray.alpha = 0;
+    this.add.tween(this.sunray).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
         // cat
-    startcat = this.add.sprite(320, 500, 'startcat');
-    var proportion = startcat.height/startcat.width;
-    startcat.height = Slider.GAME_HEIGHT/2.5;
-    startcat.width = startcat.height/proportion;
-    this.add.tween(startcat).to( { y: 50 }, 1300, Phaser.Easing.Cubic.Out, true);
+    this.startcat = this.add.sprite(320, 500, 'startcat');
+    var proportion = this.startcat.height/this.startcat.width;
+    this.startcat.height = Slider.GAME_HEIGHT/2.5;
+    this.startcat.width = this.startcat.height/proportion;
+    this.add.tween(this.startcat).to( { y: 50 }, 1300, Phaser.Easing.Cubic.Out, true);
         // white circle
-    whitecircle = this.add.sprite(0, 0, 'startwhitecircle');
-    whitecircle.height = Slider.GAME_HEIGHT;
-    whitecircle.width = Slider.GAME_WIDTH;
+    this.whitecircle = this.add.sprite(0, 0, 'startwhitecircle');
+    this.whitecircle.height = Slider.GAME_HEIGHT;
+    this.whitecircle.width = Slider.GAME_WIDTH;
         // title
-    title = this.add.sprite(0, -500, 'starttitle');
-    title.height =  Slider.GAME_HEIGHT;
-    title.width = Slider.GAME_WIDTH;
-    this.add.tween(title).to( { x: 0, y: 0 }, 1500, Phaser.Easing.Bounce.InOut, true);
-
+    this.title = this.add.sprite(0, -500, 'starttitle');
+    this.title.height =  Slider.GAME_HEIGHT;
+    this.title.width = Slider.GAME_WIDTH;
+    this.add.tween(this.title).to( { x: 0, y: 0 }, 1500, Phaser.Easing.Bounce.InOut, true);
 
     // add the button that will start the game
-    gobutton = this.add.button(Slider.GAME_WIDTH/2, Slider.GAME_HEIGHT/2, 'go', this.connect, this, 1, 0, 2);
-    gobutton.height = gobutton.height/2;
-    gobutton.width = gobutton.width/2;
-    gobutton.x = Slider.GAME_WIDTH/2 - gobutton.width/2;
-    gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.5;
+    this.gobutton = this.add.button(Slider.GAME_WIDTH/2, Slider.GAME_HEIGHT/2, 'go', this.connect, this, 1, 0, 2);
+    this.gobutton.height = this.gobutton.height/2;
+    this.gobutton.width = this.gobutton.width/2;
+    this.gobutton.x = Slider.GAME_WIDTH/2 - this.gobutton.width/2;
+    this.gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.5;
 
     // powered by sensorendipity
-    sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Fredoka", align: "center", fill:'#666'});
-    sensorendipity.inputEnabled = true;
-    sensorendipity.events.onInputOver.add(function(item) {item.fill = "#20B2BB";}, this);
-    sensorendipity.events.onInputOut.add(function(item) {item.fill = "#666";}, this);
-    sensorendipity.events.onInputDown.add(function() { window.open("http://sensorendipity.github.io/"); }, this);
-
+    this.sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Fredoka", align: "center", fill:'#666'});
+    this.sensorendipity.alpha = 0;
+    game.time.events.add(1000, function(){
+        this.sensorendipity = null;
+        this.sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "16px Fredoka", align: "center", fill:'#666'});
+        this.sensorendipity.alpha = 0;
+        this.sensorendipity.inputEnabled = true;
+        this.sensorendipity.events.onInputOver.add(function(item) {item.fill = "#2ebaff";}, this);
+        this.sensorendipity.events.onInputOut.add(function(item) {item.fill = "#666";}, this);
+        this.sensorendipity.events.onInputDown.add(function() { window.open("http://sensorendipity.github.io/"); }, this);
+        this.add.tween(this.sensorendipity).to( { alpha: 1 }, 500, Phaser.Easing.Cubic.InOut, true);
+    }, this);
 };
+
+Slider.MainMenu.prototype.destroyAssets = function() {
+    console.log("Destroying existing main menu assets");
+    if (this.sunray) { this.sunray.destroy(); }
+    if (this.startcat) { this.startcat.destroy(); }
+    if (this.title) { this.title.destroy(); }
+    if (this.whitecircle) { this.whitecircle.destroy(); }
+    if (this.goButton) { this.goButton.destroy(); }
+    if (this.sensorendipity) { this.sensorendipity.destroy(); }
+}
 
 // = = = = = = = = = = = = = = = = =
 // Sensor IP
@@ -93,6 +111,7 @@ Slider.MainMenu.prototype.connect = function() {
         // validate the IP then start the game.
         sensorJSON = JSON.parse(this.httpGet(Slider.ipAddress)).sensors;
         $("#ip_textbox").hide();
+        this.destroyAssets();
         console.log("Validated IP address " + Slider.ipAddress + ". Starting game now");
         this.state.start('PlayerMenu');
     } catch (e) {

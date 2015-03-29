@@ -57,7 +57,7 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('ice', 'assets/surfaces/icesurface.png');
     this.load.image('carpet', 'assets/surfaces/carpetsurface.png');
 
-    /*// load square tiles of cups and surfaces
+    // load square tiles of cups and surfaces
     this.load.image('teatile', 'assets/tiles/cup1_tile.png');
     this.load.image('winetile', 'assets/tiles/cup2_tile.png');
     this.load.image('milktile', 'assets/tiles/cup3_tile.png');
@@ -65,7 +65,7 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('watertile', 'assets/tiles/cup5_tile.png');
     this.load.image('woodtile', 'assets/tiles/surface1_tile.png');
     this.load.image('icetile', 'assets/tiles/surface2_tile.png');
-    this.load.image('carpettile', 'assets/tiles/surface3_tile.png');*/
+    this.load.image('carpettile', 'assets/tiles/surface3_tile.png');
 
     /*// load music
     game.load.audio('gameover', 'assets/sounds/gameover.mp3'); // example:    blaster.play();
