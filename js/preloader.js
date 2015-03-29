@@ -86,8 +86,7 @@ Slider.Preloader.prototype.preload = function() {
     this.load.spritesheet('plus', 'assets/plus.png', 93, 96);
     this.load.spritesheet('minus', 'assets/minus.png', 93, 96);
     this.load.spritesheet('quit', 'assets/quit.png', 29, 45);
-
-
+    this.load.spritesheet('gestureguide', 'assets/gesture.png', 212, 209);
 
 };
 

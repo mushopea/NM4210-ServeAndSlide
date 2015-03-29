@@ -8,10 +8,16 @@ Slider.Game = function(game) {
     this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Beer Bottle", "Water Jug"];
     this.itemWeight = [100, 200, 300, 500, 700];
     this.itemImage = ['teaCup', 'wineGlass', 'milkBottle', 'beerBottle', 'waterJug'];
+    this.itemMassDescription = ['tiny', 'small', 'medium', 'large', 'very large'];
+    this.itemWeightDescription = ["very light", "light", "of normal weight", "heavy", "very heavy"];
+    this.itemForceDescription = ["very little", "rather little", "a fair amount of", "quite strong", "very strong"];
 
     // surface values
     this.surfaceName = ["wood", "carpet", "ice"];
     this.surfaceFriction = [0.3, 0.6, 0.05]; // source: http://www.engineeringtoolbox.com/friction-coefficients-d_778.html
+    this.surfaceFrictionText = ["Normal", "High", "Low"];
+    this.surfaceFrictionEase = ["normally", "with difficulty", "easily"];
+    this.surfaceFrictionForce = ["normal", "larger", "smaller"];
 
     // game variables
     this.xmlHttp = null;
@@ -48,6 +54,10 @@ Slider.Game.prototype.create = function() {
     this.initUI();
 }
 
+// = = = = = = = = = = = = = = = = =
+// Initializations
+// = = = = = = = = = = = = = = = = =
+
 Slider.Game.prototype.initPhysics = function() {
     // We're going to be using physics, so enable the Arcade Physics system
     this.physics.startSystem(Phaser.Physics.ARCADE);
@@ -63,6 +73,7 @@ Slider.Game.prototype.initUI = function() {
     this.initQuitBtn();
     this.initScoreboard();
     this.initSpeechBubble();
+    this.updateSpeech();
 }
 
 Slider.Game.prototype.initRoom = function() {
@@ -94,8 +105,8 @@ Slider.Game.prototype.initCat = function() {
 
 Slider.Game.prototype.initScoreboard = function() {
     //  Score board
-    this.scoreboardHeight = 200;
-    this.scoreboardWidth = 400;
+    this.scoreboardHeight = 180;
+    this.scoreboardWidth = 425;
     for (var i = 0; i < Slider.numberOfPlayers; i++) {
         this.scoreboardHeight += 90;
     }
@@ -110,6 +121,10 @@ Slider.Game.prototype.initScoreboard = function() {
 }
 
 Slider.Game.prototype.initQuitBtn = function() {
+    // positioning variables
+    var canvasHeight = Slider.GAME_HEIGHT;
+    var canvasWidth = Slider.GAME_WIDTH;
+
     // Quit button
     this.quitButton = this.add.button(800, 600, 'quit', this.onClickQuitButton, this, 0, 0, 1);
     this.quitButton.height = this.quitButton.height * 2;
@@ -121,10 +136,13 @@ Slider.Game.prototype.initQuitBtn = function() {
 
 Slider.Game.prototype.initSpeechBubble = function() {
     // speech bubble
-
+    this.speechbubble = this.add.sprite(this.cat.x + this.cat.width + 50, 50, 'speechbubble');
 }
 
 
+// = = = = = = = = = = = = = = = = =
+// Events
+// = = = = = = = = = = = = = = = = =
 
 Slider.Game.prototype.shutdown = function() {
     console.log("Game shutdown commencing. Destroying assets.");
@@ -133,6 +151,7 @@ Slider.Game.prototype.shutdown = function() {
     if (this.table) { this.table.destroy(); }
     if (this.player) { this.player.destroy(); }
     if (this.scoreboard) { this.scoreboard.destroy(); }
+    if (this.speechbubble) { this.speechbubble.destroy(); }
     if (this.quitButton) { this.quitButton.destroy(); }
 }
 
@@ -144,6 +163,10 @@ Slider.Game.prototype.onClickQuitButton = function() {
     this.game.time.events.remove(this.timer);
     this.state.start('QuitGame');
 }
+
+// = = = = = = = = = = = = = = = = =
+// Updates
+// = = = = = = = = = = = = = = = = =
 
 // update player sprite
 Slider.Game.prototype.updatePlayer = function() {
@@ -157,13 +180,18 @@ Slider.Game.prototype.updatePlayer = function() {
     this.player.y = Slider.GAME_HEIGHT - 20 - this.player.height;
     this.physics.enable(this.player, Phaser.Physics.ARCADE);
     this.player.body.drag.set(100);
+
+    if (this.currentRound === 1) {
+        this.gestureguide = this.add.sprite(this.player.x + this.player.width + 50, Slider.GAME_HEIGHT - this.player.height - 10 - 200, 'gestureguide');
+        this.gestureguide.animations.add('ani', [0,1], 0.75, true);
+        this.gestureguide.animations.play("ani");
+    }
 }
 
 // update table
 Slider.Game.prototype.updateTable = function() {
-    if (this.table) {
-        this.table.destroy();
-    }
+    if (this.table) { this.table.destroy(); }
+    if (this.gestureguide) { this.gestureguide.destroy(); }
 
     // positioning variables
     var canvasHeight = Slider.GAME_HEIGHT;
@@ -183,21 +211,23 @@ Slider.Game.prototype.updateScoreboard = function() {
     if (this.playerTextGroup) { this.playerTextGroup.destroy(); }
 
     // layout values
-    var padding = 20;
+    var padding = 30;
     var topPadding = 30;
     var roundPadding = 75;
     var playerY = 210;
     var playerIncrement = 80;
-    var playerScoreMargin = 280;
+    var playerScoreMargin = 285;
 
     // "Round 1/5"
     this.roundText = this.add.text(padding, topPadding, "Round " + this.currentRound + " / " + Slider.NUMBER_OF_ROUNDS, {font: "50px Fredoka", align: "center", fill:'#000'});
 
     // kitty round indicators :D
     this.roundCatGroup = this.add.group();
+
     for (var i = 0; i < this.currentRound; i++) {
         this.roundCatGroup.create(padding + i*roundPadding, this.roundText.x + this.roundText.height + padding/2, 'roundfilled');
     }
+
     for (var j = 0; j < Slider.NUMBER_OF_ROUNDS - this.currentRound; j++) {
         this.roundCatGroup.create(padding + j*roundPadding + this.currentRound*roundPadding, this.roundText.x + this.roundText.height + padding/2, 'round');
     }
@@ -206,20 +236,44 @@ Slider.Game.prototype.updateScoreboard = function() {
     this.playerTextGroup = this.add.group();
     for (var n = 0; n < Slider.numberOfPlayers; n++) {
         var playerNo = n + 1;
-        txt = this.add.text(padding, playerY + n*playerIncrement, "Player " + playerNo, {font: "40px Fredoka", align: "center", fill:'#000'});
+
+        if (playerNo == this.currentPlayer) {
+            txt = this.add.text(padding, playerY + n*playerIncrement, "Player " + playerNo, {font: "40px Fredoka", align: "center", fill:'#5BB3E0'});
+        } else {
+            txt = this.add.text(padding, playerY + n*playerIncrement, "Player " + playerNo, {font: "40px Fredoka", align: "center", fill:'#000'});
+        }
+
         this.playerTextGroup.add(txt);
     }
     for (var m = 0; m < Slider.numberOfPlayers; m++) {
         var score = this.currentScores[m];
-        txt = this.add.text(padding + playerScoreMargin, playerY + m*playerIncrement, score, {font: "40px Fredoka", align: "center", fill:'#000'});
+        var playerNo = m + 1;
+
+        if (playerNo == this.currentPlayer) {
+            txt = this.add.text(padding + playerScoreMargin, playerY + m*playerIncrement, score, {font: "40px Fredoka", align: "center", fill:'#5BB3E0'});
+        } else {
+            txt = this.add.text(padding + playerScoreMargin, playerY + m*playerIncrement, score, {font: "40px Fredoka", align: "center", fill:'#000'});
+        }
+
         this.playerTextGroup.add(txt);
     }
 }
 
 // update cat's speech
 Slider.Game.prototype.updateSpeech = function() {
+    var padding = 30;
+    var speechspace = 330;
+
+    if (this.speechgroup) { this.speechgroup.destroy(); }
+    this.speechgroup = this.add.group();
+    txt = this.add.text(this.speechbubble.x + padding + 200, this.speechbubble.y + padding, "Please slide the " + this.itemName[this.currentItem] + " over to me!", {font: "30px Balsamiq", align: "center", fill:'#666', wordWrap: true, wordWrapWidth: speechspace});
+    this.speechgroup.add(txt);
 
 }
+
+// = = = = = = = = = = = = = = = = =
+// Sensor stuff
+// = = = = = = = = = = = = = = = = =
 
 // Get the JSON data string from the IP address.
 Slider.Game.prototype.httpGet = function(theUrl) {
@@ -262,6 +316,7 @@ Slider.Game.prototype.update = function() {
                this.player.body.acceleration.set(0, -Math.round(this.currMaxValue) * 400 * 2);
                this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 100 * 2, new Phaser.Point(0, -4500 * 2));
                console.log("Moving up by new currMaxValue = " + this.currMaxValue + " with acc: " + this.player.body.acceleration);
+               if (this.gestureguide) { this.gestureguide.destroy(); }
                this.currentRound++; // go to the next round because the push is over
            }
         } else {
