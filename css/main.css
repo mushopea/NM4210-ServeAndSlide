@@ -32,7 +32,7 @@ body {
 #ip_textbox {
 	display: none;
 	z-index: 999;
-	border: 1px solid #848484;
+	border: 2px solid #B4D9E7;
 	-webkit-border-radius: 30px;
 	-moz-border-radius: 30px;
 	border-radius: 30px;
