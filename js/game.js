@@ -12,6 +12,7 @@ Slider.Game = function(game) {
     this.itemMassDescription = ['tiny', 'small', 'medium', 'large', 'very large'];
     this.itemWeightDescription = ["very light", "light", "of normal weight", "heavy", "very heavy"];
     this.itemForceDescription = ["very little", "rather little", "a fair amount of", "quite strong", "very strong"];
+    this.itemShortDescription = ["Very light", "Light", "Normal weight", "Heavy", "Very heavy"];
 
     // surface values
     this.surfaceName = ["wood", "carpet", "ice"];
@@ -21,6 +22,7 @@ Slider.Game = function(game) {
     this.surfaceFrictionText = ["Normal", "High", "Low"];
     this.surfaceFrictionEase = ["normally", "with difficulty", "easily"];
     this.surfaceFrictionForce = ["normal", "larger", "smaller"];
+    this.surfaceFrictionMultiplier = [1, 0.5, 2];
 
     // game variables
     this.xmlHttp = null;
@@ -305,7 +307,7 @@ Slider.Game.prototype.updateSpeech = function() {
     surfaceName = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceTile.y + 7, this.surfaceNameCapital[this.currentSurface] + " surface", {font: "30px Fredoka", align: "center", fill:'#5FBEEE'});
     this.speechgroup.add(surfaceName);
 
-    itemWeight = this.add.text(itemTile.x + itemTile.width + padding, itemName.y + itemName.height + 10, this.itemWeight[this.currentItem] + " ml", {font: "30px Balsamiq", align: "center", fill:'#666'});
+    itemWeight = this.add.text(itemTile.x + itemTile.width + padding, itemName.y + itemName.height + 10, /*this.itemWeight[this.currentItem] + "ml (" +*/ this.itemShortDescription[this.currentItem], {font: "30px Balsamiq", align: "center", fill:'#666'});
     this.speechgroup.add(itemWeight);
 
     surfaceFriction = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceName.y + surfaceName.height + 10, this.surfaceFrictionText[this.currentSurface] + " friction", {font: "30px Balsamiq", align: "center", fill:'#666'});
@@ -393,13 +395,14 @@ Slider.Game.prototype.update = function() {
                this.currMaxValue = magnitude;
            } else {
                // value has gone past its peak, time to push the max value
-               if (this.currMaxValue > 11) { // limit the speed
-                   this.currMaxValue = 11;
+               if (this.currMaxValue > 40) { // limit the speed
+                   this.currMaxValue = 40;
                }
+               var accelerationValue = -Math.round(this.currMaxValue) * 800 * (300/this.itemWeight[this.currentItem]) * (this.surfaceFrictionMultiplier[this.currentSurface]);
 
                this.player.body.velocity.y = 0;
-               this.player.body.acceleration.set(0, -Math.round(this.currMaxValue) * 400 * 2);
-               this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 100 * 2, new Phaser.Point(0, -4500 * 2));
+               this.player.body.acceleration.set(0, accelerationValue);
+               this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 200, new Phaser.Point(0, -9000));
                console.log("Moving up by new currMaxValue = " + this.currMaxValue + " with acc: " + this.player.body.acceleration);
 
                if (this.gestureguide) { this.gestureguide.destroy(); }
