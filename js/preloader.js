@@ -92,3 +92,49 @@ Slider.Preloader.prototype.preload = function() {
 Slider.Preloader.prototype.create = function() {
     this.state.start('MainMenu');
 };
+
+$(function() {
+    $( "#instructions" ).click(function() {
+        swal({   
+            title: 'Instructions',
+            width: '80',   
+            html:  '<div id="owl-example" class="owl-carousel">'
+            + '<div class="instructionPage"><div><img src="assets/startscreen/download.png"></div><div><h3>Install Sensorendipity</h3><ol><li><p>Open the Play Store on your Android Phone</p></li><li>Search for "Sensorendipity"</li><li>Download & Install Sensorendipity</li><li>Open Sensorendipity</li></ol></div></div>'
+            + '<div class="instructionPage"><div><img src="assets/startscreen/setup.png"></div><div><h3>Setup Sensorendipity</h3><ol><li>Ensure Computer & Phone are connected to the same Wi-Fi Network</li><li><p>Open Sensorendipity</p></li><li>Enter IP Address into Slide n Serve</li><li>Start Playing!</li></ol></div></div>'
+        });
+        var owl = $("#owl-example");
+        $("#owl-example").owlCarousel({
+            navigation : true, // Show next and prev buttons
+            slideSpeed : 300,
+            rewindNav: false,
+            navigationText: ["", ""],
+            items: 1,
+            singleItem:true,
+            afterAction: function(){
+              if ( this.itemsAmount > this.visibleItems.length ) {
+                $('.owl-next').show();
+                $('.owl-prev').show();
+
+                $('.owl-next').removeClass('disabled');
+                $('.owl-prev').removeClass('disabled');
+                if ( this.currentItem == 0 ) {
+                  $('.owl-prev').addClass('disabled');
+                }
+                if ( this.currentItem == this.maximumItem ) {
+                  $('.owl-next').addClass('disabled');
+                }
+
+              } else {
+                $('.owl-next').hide();
+                $('.owl-prev').hide();
+              }
+            }
+        });
+        $(".owl-next").click(function(){
+            owl.trigger('owl.next');
+        })
+        $(".owl-prev").click(function(){
+            owl.trigger('owl.prev');
+        })
+    });
+});
