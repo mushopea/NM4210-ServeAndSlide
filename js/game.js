@@ -45,14 +45,16 @@ Slider.Game.prototype.create = function() {
 
     // initialize curr state maintenance vars
     this.player = null;
+    this.showedScore = false;
     this.currentRound = 1;
     this.currentPlayer = 1;
     this.currentItem = Math.floor(Math.random() * this.itemName.length);
     this.currentSurface = Math.floor(Math.random() * this.surfaceName.length);
     this.currentGameState = this.gameStates[1];
+    this.currentRoundScore = 0;
     this.currentScores = [];
     for (var m = 0; m < Slider.numberOfPlayers; m++) {
-        this.currentScores.push("0");
+        this.currentScores.push(0);
     }
 
     this.initPhysics();
@@ -265,7 +267,7 @@ Slider.Game.prototype.updateScoreboard = function() {
         this.playerTextGroup.add(txt);
     }
     for (var m = 0; m < Slider.numberOfPlayers; m++) {
-        var score = this.currentScores[m];
+        var score = this.currentScores[m].toString();
         var playerNo = m + 1;
 
         if (playerNo == this.currentPlayer) {
@@ -346,29 +348,75 @@ Slider.Game.prototype.getSensorValue = function() {
 // = = = = = = = = = = = = = = = = =
 
 Slider.Game.prototype.showScore = function() {
+    if (this.currentRoundScore != 0 && !this.showedScore) {
+        // update score array
+        var playerNo = this.currentPlayer-1;
+        this.currentScores[playerNo] += this.currentRoundScore;
 
+        // local variables
+        var scorePadding = 30;
+        var myself = this;
+
+        // display score near sprite
+        this.scoreText = this.add.text(this.player.x + this.player.width + scorePadding, this.player.y - scorePadding, "+" + this.currentRoundScore, {
+            font: "50px Fredoka",
+            align: "left",
+            fill: '#FF423C'
+        });
+        this.scoreText.alpha = 0;
+        this.add.tween(this.scoreText).to( { alpha: 1 }, 500, Phaser.Easing.Cubic.InOut, true);
+
+        // update scoreboard
+        this.updateScoreboard();
+
+        // destroy score after a while
+        game.time.events.add(2000, function() { myself.scoreText.alpha = 0; });
+
+        // don't update score anymore
+        this.showedScore = true;
+    }
 }
 
-Slider.Game.prototype.changeCatAnimation = function() {
-    game.physics.arcade.overlap(this.player, this.boundarySprite, function() {
-        this.cat.animations.play("hit");
-        this.player.destroy();
-    }, null, this);
+Slider.Game.prototype.calculateCurrentRoundScore = function() {
+    var tableLength = Slider.GAME_HEIGHT - this.cat.height;
+    this.currentRoundScore = Math.round(((Slider.GAME_HEIGHT-(this.player.y + this.player.height))/tableLength) * 100);
+}
 
-    if (this.player.body.velocity.y === 0) {
-        this.cat.animations.play("happy");
+
+Slider.Game.prototype.showCatAnimationAndScore = function() {
+    if (this.currentGameState == "postRound") {
+        // cup hits cat.
+        game.physics.arcade.overlap(this.player, this.boundarySprite, function () {
+            this.cat.animations.play("hit");
+            this.player.destroy();
+        }, null, this);
+
+        // cup remains on table. show happy cat and score.
+        if (this.player.body.velocity.y === 0) {
+            this.calculateCurrentRoundScore();
+            this.showScore();
+            this.cat.animations.play("happy");
+        }
     }
 }
 
 Slider.Game.prototype.goToNextRound = function() {
     this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function () {
-        if (this.currentRound < Slider.NUMBER_OF_ROUNDS) {
-            this.currentRound++; // go to the next round because the push is over
-            console.log(this.currentRound + "<-- curr round increment to");
+
+        // change player or round.
+        if (this.currentPlayer < Slider.numberOfPlayers) {
+            this.currentPlayer++;
         } else {
-            this.currentGameState = "endGame";
+            if (this.currentRound < Slider.NUMBER_OF_ROUNDS) {
+                this.currentRound++; // go to the next round because the push is over
+                this.currentPlayer = 1;
+                console.log(this.currentRound + "<-- curr round increment to");
+            } else {
+                this.currentGameState = "endGame";
+            }
         }
 
+        // reset game variables!
         this.currentItem = Math.floor(Math.random() * this.itemName.length);
         this.currentSurface = Math.floor(Math.random() * this.surfaceName.length);
         this.updateScoreboard();
@@ -378,9 +426,9 @@ Slider.Game.prototype.goToNextRound = function() {
         this.currMaxValue = 0;
         this.cat.animations.play("idle");
         this.currentGameState = "waitingToPushObject";
+        this.showedScore = false;
         game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
     }, this); //esc to quit
-
 }
 
 Slider.Game.prototype.update = function() {
@@ -391,6 +439,7 @@ Slider.Game.prototype.update = function() {
         // console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
 
         if (magnitude > this.minSensorValue) { // sensor value is above threshold
+
            if (this.currMaxValue < magnitude) {
                this.currMaxValue = magnitude;
            } else {
@@ -398,25 +447,32 @@ Slider.Game.prototype.update = function() {
                if (this.currMaxValue > 40) { // limit the speed
                    this.currMaxValue = 40;
                }
+
                var accelerationValue = -Math.round(this.currMaxValue) * 800 * (300/this.itemWeight[this.currentItem]) * (this.surfaceFrictionMultiplier[this.currentSurface]);
 
+               // push the cup
                this.player.body.velocity.y = 0;
                this.player.body.acceleration.set(0, accelerationValue);
                this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 200, new Phaser.Point(0, -9000));
                console.log("Moving up by new currMaxValue = " + this.currMaxValue + " with acc: " + this.player.body.acceleration);
 
+               // destroy the gesture guide once you push
                if (this.gestureguide) { this.gestureguide.destroy(); }
+
+               // next round, switch out of game state.
                this.goToNextRound();
                this.currentGameState = "postRound";
            }
+
         } else {
             this.player.body.acceleration.set(0); // stop moving, don't do anything if the sensor value is too low
         }
 
     } else if (this.currentGameState == "postRound") {
+
+        // once player pushes the cup, change cat animation and show score
         this.player.body.acceleration.set(0);
-        this.changeCatAnimation();
-        this.showScore();
+        this.showCatAnimationAndScore();
 
     } else if (this.currentGameState == "waitingForNextPlayer") {
         this.player.body.acceleration.set(0); // stop moving if the round is over.
