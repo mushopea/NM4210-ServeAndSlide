@@ -114,6 +114,7 @@ Slider.MainMenu.prototype.connect = function() {
         // validate the IP then start the game.
         sensorJSON = JSON.parse(this.httpGet(Slider.ipAddress)).sensors;
         $("#ip_textbox").hide();
+        $("#instructions").hide();
         this.destroyAssets();
         console.log("Validated IP address " + Slider.ipAddress + ". Starting game now");
         this.state.start('PlayerMenu');
