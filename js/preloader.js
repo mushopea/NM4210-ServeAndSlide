@@ -105,6 +105,7 @@ $(function() {
         swal({   
             title: 'Instructions',
             width: '80',   
+            customClass: 'instructions',
             html:  '<div id="owl-example" class="owl-carousel">'
             + '<div class="instructionPage"><div><img src="assets/startscreen/download.png"></div><div><h3>Install Sensorendipity</h3><ol><li><p>Open the Play Store on your Android Phone</p></li><li>Search for "Sensorendipity"</li><li>Download & Install Sensorendipity</li><li>Open Sensorendipity</li></ol></div></div>'
             + '<div class="instructionPage"><div><img src="assets/startscreen/setup.png"></div><div><h3>Setup Sensorendipity</h3><ol><li>Ensure Computer & Phone are connected to the same Wi-Fi Network</li><li><p>Open Sensorendipity</p></li><li>Enter IP Address into Slide n Serve</li><li>Start Playing!</li></ol></div></div>'
