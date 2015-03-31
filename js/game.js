@@ -316,6 +316,47 @@ Slider.Game.prototype.updateSpeech = function() {
     this.speechgroup.add(surfaceFriction);
 }
 
+Slider.Game.prototype.updateSpeechPostRound = function(scoreRating) {
+
+    var padding = 30;
+    var xpos = padding + this.speechbubble.x + 200;
+    var speechspace = 345;
+
+    if (this.speechgroup) { this.speechgroup.destroy(); }
+    this.speechgroup = this.add.group();
+
+    if (scoreRating == "bad") {
+        txt = this.add.text(xpos, this.speechbubble.y + padding, "Nooo! Push the " + this.itemName[this.currentItem] + " with less force!", {
+            font: "30px Balsamiq",
+            align: "center",
+            fill: '#666',
+            wordWrap: true,
+            wordWrapWidth: speechspace
+        });
+    } else if (scoreRating == "normal") {
+        txt = this.add.text(xpos, this.speechbubble.y + padding, "Good job! Next time, you can push the " + this.itemName[this.currentItem] + " with a little more force.", {
+            font: "30px Balsamiq",
+            align: "center",
+            fill: '#666',
+            wordWrap: true,
+            wordWrapWidth: speechspace
+        });
+    } else if (scoreRating == "good") {
+        txt = this.add.text(xpos, this.speechbubble.y + padding, "Fantastic! You pushed the " + this.itemName[this.currentItem] + " with just the right amount of force!", {
+            font: "30px Balsamiq",
+            align: "center",
+            fill: '#666',
+            wordWrap: true,
+            wordWrapWidth: speechspace
+        });
+    } else {
+        console.log("Invalid scoreRating. Enter bad, normal or good.");
+    }
+
+    this.speechgroup.add(txt);
+
+}
+
 // = = = = = = = = = = = = = = = = =
 // Sensor stuff
 // = = = = = = = = = = = = = = = = =
@@ -388,6 +429,7 @@ Slider.Game.prototype.showCatAnimationAndScore = function() {
         // cup hits cat.
         game.physics.arcade.overlap(this.player, this.boundarySprite, function () {
             this.cat.animations.play("hit");
+            this.updateSpeechPostRound("bad");
             this.player.destroy();
         }, null, this);
 
@@ -395,9 +437,28 @@ Slider.Game.prototype.showCatAnimationAndScore = function() {
         if (this.player.body.velocity.y === 0) {
             this.calculateCurrentRoundScore();
             this.showScore();
+            if (this.currentRoundScore < 60) {
+                this.updateSpeechPostRound("normal");
+            } else {
+                this.updateSpeechPostRound("good");
+            }
             this.cat.animations.play("happy");
         }
     }
+}
+
+Slider.Game.prototype.resetGameVariables = function() {
+    this.currentItem = Math.floor(Math.random() * this.itemName.length);
+    this.currentSurface = Math.floor(Math.random() * this.surfaceName.length);
+    this.updateScoreboard();
+    this.updateTable();
+    this.updatePlayer();
+    this.updateSpeech();
+    this.currMaxValue = 0;
+    this.cat.animations.play("idle");
+    this.currentGameState = "waitingToPushObject";
+    this.showedScore = false;
+    game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 }
 
 Slider.Game.prototype.goToNextRound = function() {
@@ -416,18 +477,7 @@ Slider.Game.prototype.goToNextRound = function() {
             }
         }
 
-        // reset game variables!
-        this.currentItem = Math.floor(Math.random() * this.itemName.length);
-        this.currentSurface = Math.floor(Math.random() * this.surfaceName.length);
-        this.updateScoreboard();
-        this.updateTable();
-        this.updatePlayer();
-        this.updateSpeech();
-        this.currMaxValue = 0;
-        this.cat.animations.play("idle");
-        this.currentGameState = "waitingToPushObject";
-        this.showedScore = false;
-        game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
+       this.resetGameVariables();
     }, this); //esc to quit
 }
 
@@ -448,7 +498,7 @@ Slider.Game.prototype.update = function() {
                    this.currMaxValue = 40;
                }
 
-               var accelerationValue = -Math.round(this.currMaxValue) * 800 * (300/this.itemWeight[this.currentItem]) * (this.surfaceFrictionMultiplier[this.currentSurface]);
+               var accelerationValue = -Math.round(this.currMaxValue) * 500 * (300/this.itemWeight[this.currentItem]) * (this.surfaceFrictionMultiplier[this.currentSurface]);
 
                // push the cup
                this.player.body.velocity.y = 0;

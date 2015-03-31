@@ -39,6 +39,7 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('startsunray', 'assets/startscreen/sunray.png');
     this.load.image('startwhitecircle', 'assets/startscreen/whitecircle.png');
 
+    // load ui elements
     this.load.image('room', 'assets/background.png');
     this.load.image('speechbubble', 'assets/speech.png');
     this.load.image('round', 'assets/catround.png');
@@ -65,6 +66,12 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('woodtile', 'assets/tiles/surface1_tile.png');
     this.load.image('icetile', 'assets/tiles/surface2_tile.png');
     this.load.image('carpettile', 'assets/tiles/surface3_tile.png');
+
+    // load encouragement memes
+    this.load.image('goodmeme', 'assets/meme/good.jpg');
+    this.load.image('badmeme', 'assets/meme/bad.jpg');
+    this.load.image('normalmeme', 'assets/meme/normal.jpg');
+
 
     /*// load music
     game.load.audio('gameover', 'assets/sounds/gameover.mp3'); // example:    blaster.play();
