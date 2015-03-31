@@ -9,6 +9,9 @@ Slider.MultiplayerMenu.prototype.create = function() {
     canvasHeight = Slider.GAME_HEIGHT;
     canvasWidth = Slider.GAME_WIDTH;
     this.stage.backgroundColor = '#279dbc';
+    this.hoverSound = game.add.audio('hover');
+    this.hoverSound.volume += 2;
+
 
     if (this.chooseText) { this.chooseText.destroy(); }
     if (this.minusButton) { this.minusButton.destroy(); }
@@ -30,6 +33,11 @@ Slider.MultiplayerMenu.prototype.create = function() {
     this.gobutton = this.add.button(0, 0, 'go', this.goToGame, this, 1, 0, 2);
     this.gobutton.x = canvasWidth/2 - this.gobutton.width/2;
     this.gobutton.y = canvasHeight - canvasHeight/3;
+
+    // sound
+    this.plusButton.events.onInputDown.add(function(item) {this.hoverSound.play();}, this);
+    this.minusButton.events.onInputDown.add(function(item) {this.hoverSound.play();}, this);
+    this.gobutton.events.onInputOver.add(function(item) {this.hoverSound.play();}, this);
 }
 
 Slider.MultiplayerMenu.prototype.goToGame = function() {

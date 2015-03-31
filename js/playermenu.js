@@ -3,12 +3,17 @@ Slider.PlayerMenu = function(game){};
 Slider.PlayerMenu.prototype.create = function() {
     myself = this;
     this.stage.backgroundColor = '#6ed0e3';
+    this.hoverSound = game.add.audio('hover');
+    this.hoverSound.volume += 2;
 
     if (this.singleButton) { this.singleButton.destroy(); }
     if (this.multiButton) { this.multiButton.destroy(); }
 
     this.singleButton = this.add.button(100, 255, 'singleplayer', this.goToGame, this, 1, 0, 1);
     this.multiButton = this.add.button(0, 255, 'multiplayer', this.goToMultiplayerMenu, this, 1, 0, 1);
+
+    this.singleButton.events.onInputOver.add(function(item) {this.hoverSound.play();}, this);
+    this.multiButton.events.onInputOver.add(function(item) {this.hoverSound.play();}, this);
 
     this.singleButton.height = this.singleButton.height * 2;
     this.singleButton.width = this.singleButton.width * 2;

@@ -59,6 +59,8 @@ Slider.Game.prototype.create = function() {
 
     this.initPhysics();
     this.initUI();
+    this.initSounds();
+    // this.initBGM();
 }
 
 // = = = = = = = = = = = = = = = = =
@@ -70,8 +72,20 @@ Slider.Game.prototype.initPhysics = function() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
 }
 
+Slider.Game.prototype.initBGM = function() {
+    this.bgm = game.add.audio('bgm');
+    this.bgm.onDecoded.add(function() { this.bgm.fadeIn(5000); }, this);
+    this.bgm.play();
+}
 
-// draw all the UI elements
+Slider.Game.prototype.initSounds = function() {
+    this.breakSound = game.add.audio('break');
+    this.manyPointsSound = game.add.audio('manypoints');
+    this.manyPointsSound.volume += 1.5;
+    this.pointsSound = game.add.audio('points');
+    this.slideSound = game.add.audio('slide2');
+}
+
 Slider.Game.prototype.initUI = function() {
     this.initRoom();
     this.initCat();
@@ -224,7 +238,6 @@ Slider.Game.prototype.updateTable = function() {
     this.table.width = canvasWidth;
 }
 
-
 // update scoreboard
 Slider.Game.prototype.updateScoreboard = function() {
     if (this.roundText) { this.roundText.destroy(); }
@@ -316,6 +329,7 @@ Slider.Game.prototype.updateSpeech = function() {
     this.speechgroup.add(surfaceFriction);
 }
 
+// give feedback after pushes in the speech bubble.
 Slider.Game.prototype.updateSpeechPostRound = function(scoreRating) {
 
     var padding = 30;
@@ -381,6 +395,11 @@ Slider.Game.prototype.updateSpeechPostRound = function(scoreRating) {
     this.speechgroup.add(meme);
 }
 
+// show the round review
+Slider.Game.prototype.showRoundReview = function() {
+    
+}
+
 // = = = = = = = = = = = = = = = = =
 // Sensor stuff
 // = = = = = = = = = = = = = = = = =
@@ -422,6 +441,13 @@ Slider.Game.prototype.showScore = function() {
         var scorePadding = 30;
         var myself = this;
 
+        // play appropriate sound
+        if (this.currentRoundScore > 60) {
+            this.manyPointsSound.play();
+        } else {
+            this.pointsSound.play();
+        }
+
         // display score near sprite
         this.scoreText = this.add.text(this.player.x + this.player.width + scorePadding, this.player.y - scorePadding, "+" + this.currentRoundScore, {
             font: "50px Fredoka",
@@ -447,13 +473,13 @@ Slider.Game.prototype.calculateCurrentRoundScore = function() {
     this.currentRoundScore = Math.round(((Slider.GAME_HEIGHT-(this.player.y + this.player.height))/tableLength) * 100);
 }
 
-
 Slider.Game.prototype.showCatAnimationAndScore = function() {
     if (this.currentGameState == "postRound") {
         // cup hits cat.
         game.physics.arcade.overlap(this.player, this.boundarySprite, function () {
             this.cat.animations.play("hit");
             this.updateSpeechPostRound("bad");
+            this.breakSound.play();
             this.player.destroy();
         }, null, this);
 
@@ -498,6 +524,7 @@ Slider.Game.prototype.goToNextRound = function() {
                 console.log(this.currentRound + "<-- curr round increment to");
             } else {
                 this.currentGameState = "endGame";
+                this.onClickQuitButton();
             }
         }
 
@@ -525,6 +552,7 @@ Slider.Game.prototype.update = function() {
                var accelerationValue = -Math.round(this.currMaxValue) * 500 * (300/this.itemWeight[this.currentItem]) * (this.surfaceFrictionMultiplier[this.currentSurface]);
 
                // push the cup
+               this.slideSound.play();
                this.player.body.velocity.y = 0;
                this.player.body.acceleration.set(0, accelerationValue);
                this.physics.arcade.accelerationFromRotation(-Math.PI / 2, 200, new Phaser.Point(0, -9000));

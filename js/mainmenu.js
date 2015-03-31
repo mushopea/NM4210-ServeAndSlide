@@ -25,6 +25,12 @@ Slider.MainMenu.prototype.create = function() {
     // if game was restarted, destroy previous assets.
     this.destroyAssets();
 
+    // play sound
+    this.slideSound = game.add.audio('slide1');
+    this.slideSound.play();
+    this.hoverSound = game.add.audio('hover');
+    this.hoverSound.volume += 2;
+
     // display images
         // sunray
     this.sunray = this.add.sprite(0, 0, 'startsunray');
@@ -53,6 +59,8 @@ Slider.MainMenu.prototype.create = function() {
     this.gobutton = this.add.button(Slider.GAME_WIDTH/2, Slider.GAME_HEIGHT/2, 'go', this.connect, this, 1, 0, 2);
     this.gobutton.x = Slider.GAME_WIDTH/2 - this.gobutton.width/2;
     this.gobutton.y = Slider.GAME_HEIGHT - Slider.GAME_HEIGHT/3.7;
+    this.gobutton.events.onInputOver.add(function(item) {this.hoverSound.play();}, this);
+
 
     // powered by sensorendipity
     this.sensorendipity = this.add.text(10, Slider.GAME_HEIGHT-16, "Powered by Sensorendipity", {font: "32px Fredoka", align: "center", fill:'#666'});

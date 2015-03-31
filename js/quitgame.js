@@ -7,10 +7,17 @@ Slider.QuitGame.prototype = {
 
         if (this.menutxt) { this.menutxt.destroy(); }
         if (this.plyrtxt) { this.plyrtxt.destroy(); }
+        if (this.maintxt) { this.maintxt.destroy(); }
+
+        // game over
+        this.mainTxt = game.add.text(game.world.centerX, 0, "Game Over", { font: "200px Fredoka", fill: "#C2E9FF", align: "center" });
+        this.mainTxt.anchor.set(0.5);
+        this.add.tween(this.mainTxt).to( { y: 380 }, 1500, Phaser.Easing.Circular.Out, true);
+
 
         // add text links
-        this.menutxt = game.add.text(game.world.centerX, game.world.centerY - 50, "Go to Main Menu", { font: "44px Fredoka", fill: "#fff", align: "center" });
-        this.plyrtxt = game.add.text(game.world.centerX, game.world.centerY + 50, "Go to Player Select", { font: "44px Fredoka", fill: "#fff", align: "center" });
+        this.menutxt = game.add.text(game.world.centerX, game.world.centerY, "Go to Main Menu", { font: "44px Fredoka", fill: "#fff", align: "center" });
+        this.plyrtxt = game.add.text(game.world.centerX, game.world.centerY + 100, "Go to Player Select", { font: "44px Fredoka", fill: "#fff", align: "center" });
         this.menutxt.anchor.set(0.5);
         this.plyrtxt.anchor.set(0.5);
 
@@ -23,6 +30,10 @@ Slider.QuitGame.prototype = {
         this.plyrtxt.events.onInputOut.add(this.out, this);
         this.plyrtxt.events.onInputDown.add(this.playerTextPressed, this);
         this.plyrtxt.events.onInputOver.add(this.over, this);
+
+        // sound
+        this.gameOverSound = game.add.audio('gameover');
+        this.gameOverSound.play();
     },
 
     update: function() {

@@ -73,16 +73,16 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('normalmeme', 'assets/meme/normal.jpg');
 
 
-    /*// load music
+    // load music
     game.load.audio('gameover', 'assets/sounds/gameover.mp3'); // example:    blaster.play();
     game.load.audio('manypoints', 'assets/sounds/manypointsding.mp3');
     game.load.audio('points', 'assets/sounds/pointsding.mp3');
     game.load.audio('sadmeow', 'assets/sounds/sadmeow.mp3');
     game.load.audio('slide1', 'assets/sounds/slide1.mp3');
     game.load.audio('slide2', 'assets/sounds/slide2.mp3');
-    game.load.audio('bgm1', 'assets/sounds/bgm2.mp3');
+    game.load.audio('bgm', 'assets/sounds/bgm2.mp3');
     game.load.audio('break', 'assets/sounds/break.mp3');
-    game.load.audio('hover', 'assets/sounds/buttonhover.mp3');*/
+    game.load.audio('hover', 'assets/sounds/buttonhover.mp3');
 
     // load sprite sheets
     this.load.spritesheet('cat', 'assets/sprite2.png', 205, 301);
