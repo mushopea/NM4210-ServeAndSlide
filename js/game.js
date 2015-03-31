@@ -325,36 +325,60 @@ Slider.Game.prototype.updateSpeechPostRound = function(scoreRating) {
     if (this.speechgroup) { this.speechgroup.destroy(); }
     this.speechgroup = this.add.group();
 
+
     if (scoreRating == "bad") {
+
         txt = this.add.text(xpos, this.speechbubble.y + padding, "Nooo! Push the " + this.itemName[this.currentItem] + " with less force!", {
             font: "30px Balsamiq",
             align: "center",
-            fill: '#666',
+            fill: '#B0475A',
             wordWrap: true,
             wordWrapWidth: speechspace
         });
+
+        meme = this.add.sprite(0, txt.y + txt.height + padding, 'badmeme');
+        meme.x = txt.x;
+        meme.width =  txt.width;
+        meme.height = meme.height/1.8;
+
     } else if (scoreRating == "normal") {
+
         txt = this.add.text(xpos, this.speechbubble.y + padding, "Good job! Next time, you can push the " + this.itemName[this.currentItem] + " with a little more force.", {
             font: "30px Balsamiq",
             align: "center",
-            fill: '#666',
+            fill: '#006BA0',
             wordWrap: true,
             wordWrapWidth: speechspace
         });
+
+        meme = this.add.sprite(0, txt.y + txt.height + padding, 'normalmeme');
+        meme.x = txt.x;
+        meme.width = txt.width;
+        meme.height = meme.height/1.5;
+
+
     } else if (scoreRating == "good") {
-        txt = this.add.text(xpos, this.speechbubble.y + padding, "Fantastic! You pushed the " + this.itemName[this.currentItem] + " with just the right amount of force!", {
+
+        txt = this.add.text(xpos, this.speechbubble.y + padding, "WOW! You pushed the " + this.itemName[this.currentItem] + " with just the right amount of force!", {
             font: "30px Balsamiq",
             align: "center",
-            fill: '#666',
+            fill: '#3CB042',
             wordWrap: true,
             wordWrapWidth: speechspace
         });
+
+        meme = this.add.sprite(0, txt.y + txt.height + padding, 'goodmeme');
+        meme.x = txt.x;
+        meme.width = txt.width;
+        meme.height = meme.height/1.5;
+
     } else {
         console.log("Invalid scoreRating. Enter bad, normal or good.");
     }
 
-    this.speechgroup.add(txt);
 
+    this.speechgroup.add(txt);
+    this.speechgroup.add(meme);
 }
 
 // = = = = = = = = = = = = = = = = =
