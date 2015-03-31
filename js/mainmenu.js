@@ -5,6 +5,7 @@ Slider.MainMenu.prototype.create = function() {
     // to do: make responsive (scale according to window size)
     myself = this;
     $("#ip_textbox").show();
+    $("#instructions").show();
 
     // focus cursor on the box
     var input = $("#ip_textbox");
@@ -123,7 +124,9 @@ Slider.MainMenu.prototype.connect = function() {
         swal({
             title: "Oops!",
             text: "Invalid IP address. Please re-enter!",
-            imageUrl: "assets/oops.png"
+            imageUrl: "assets/oops.png",
+            imageSize: "128x128",
+            width: '50'
         });
     }
 };

@@ -60,6 +60,9 @@ button {
 	font-size: 1em;
 	outline: 0;
 }
+.icon {
+	margin: 0 auto;
+}
 #instructions {
 	position: absolute;
 	bottom: 8vh;
@@ -74,7 +77,7 @@ button {
 button:hover {
 	color: #5AC2D9;
 }
-.sweet-alert {
+.instructions {
 	height: 70vh;
 }
 .sweet-alert hr {
