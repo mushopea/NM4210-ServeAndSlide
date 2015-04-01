@@ -89,7 +89,7 @@ Slider.Game.prototype.initSounds = function() {
 Slider.Game.prototype.initUI = function() {
     this.initRoom();
     this.initCat();
-    this.initBoundarySprite();
+    this.updateBoundarySprite();
     this.updateTable();
     this.updatePlayer();
     this.initQuitBtn();
@@ -125,17 +125,18 @@ Slider.Game.prototype.initCat = function() {
     this.cat.animations.play("idle");
 }
 
-Slider.Game.prototype.initBoundarySprite = function() {
+Slider.Game.prototype.updateBoundarySprite = function() {
     if (this.boundarySprite) {
         this.boundarySprite.destroy();
     }
 
     // Player sprite properties
-    this.boundarySprite = this.add.sprite(0, 0, 'round');
-    this.boundarySprite.x = game.world.centerX;
-    this.boundarySprite.y = this.cat.y + 120;
+    this.boundarySprite = this.add.sprite(0, 0, 'roundfilled');
+    this.boundarySprite.width = Slider.GAME_WIDTH;
+    if (this.player) {
+        this.boundarySprite.height = this.cat.y + this.cat.height - this.player.height;
+    }
     this.boundarySprite.alpha = 0;
-    this.boundarySprite.anchor.set(0.5);
     this.physics.enable(this.boundarySprite, Phaser.Physics.ARCADE);
 }
 
@@ -524,6 +525,7 @@ Slider.Game.prototype.resetGameVariables = function() {
     this.updateScoreboard();
     this.updateTable();
     this.updatePlayer();
+    this.updateBoundarySprite();
     this.updateSpeech();
     this.currMaxValue = 0;
     this.cat.animations.play("idle");

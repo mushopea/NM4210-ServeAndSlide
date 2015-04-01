@@ -14,7 +14,6 @@ Slider.QuitGame.prototype = {
         this.mainTxt.anchor.set(0.5);
         this.add.tween(this.mainTxt).to( { y: 380 }, 1500, Phaser.Easing.Circular.Out, true);
 
-
         // add text links
         this.menutxt = game.add.text(game.world.centerX, game.world.centerY, "Go to Main Menu", { font: "44px Fredoka", fill: "#fff", align: "center" });
         this.plyrtxt = game.add.text(game.world.centerX, game.world.centerY + 100, "Go to Player Select", { font: "44px Fredoka", fill: "#fff", align: "center" });

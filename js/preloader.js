@@ -12,7 +12,7 @@ Slider.Preloader = function(game) {
 
     // game variables and limits
     Slider.MAX_NUMBER_OF_PLAYERS = 4;
-    Slider.NUMBER_OF_ROUNDS = 3;
+    Slider.NUMBER_OF_ROUNDS = 5;
     Slider.numberOfPlayers = 1;
     Slider.winner = 1;
     Slider.scores = [];
