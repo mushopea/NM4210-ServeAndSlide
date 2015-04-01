@@ -31,6 +31,9 @@ Slider.MainMenu.prototype.create = function() {
     this.hoverSound = game.add.audio('hover');
     this.hoverSound.volume += 2;
 
+    // stage background
+    this.stage.backgroundColor = '#dcfaff';
+
     // display images
         // sunray
     this.sunray = this.add.sprite(0, 0, 'startsunray');

@@ -12,15 +12,10 @@ Slider.Preloader = function(game) {
 
     // game variables and limits
     Slider.MAX_NUMBER_OF_PLAYERS = 4;
-    Slider.NUMBER_OF_ROUNDS = 5;
+    Slider.NUMBER_OF_ROUNDS = 3;
     Slider.numberOfPlayers = 1;
-
-    // player scores
+    Slider.winner = 1;
     Slider.scores = [];
-    for (i = 0; i < Slider.numberOfPlayers; i++) {
-        Slider.scores.push(0);
-    }
-
 };
 
 Slider.Preloader.prototype.preload = function() {
@@ -71,7 +66,7 @@ Slider.Preloader.prototype.preload = function() {
     this.load.image('goodmeme', 'assets/meme/good.jpg');
     this.load.image('badmeme', 'assets/meme/bad.jpg');
     this.load.image('normalmeme', 'assets/meme/normal.jpg');
-
+    this.load.image('awinnerisyou', 'assets/awiy.png');
 
     // load music
     game.load.audio('gameover', 'assets/sounds/gameover.mp3'); // example:    blaster.play();

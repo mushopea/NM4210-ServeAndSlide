@@ -22,7 +22,7 @@ Slider.Game = function(game) {
     this.surfaceFrictionText = ["Normal", "High", "Low"];
     this.surfaceFrictionEase = ["normally", "with difficulty", "easily"];
     this.surfaceFrictionForce = ["normal", "larger", "smaller"];
-    this.surfaceFrictionMultiplier = [1, 0.5, 2];
+    this.surfaceFrictionMultiplier = [1, 0.75, 1.5];
 
     // game variables
     this.xmlHttp = null;
@@ -197,6 +197,27 @@ Slider.Game.prototype.onClickQuitButton = function() {
     console.log("Quitting game");
     this.game.time.events.remove(this.timer);
     this.state.start('QuitGame');
+}
+
+Slider.Game.prototype.endTheGame = function() {
+    currentGameState = "endGame";
+
+    // decide who is the winner with max score.
+    var winner = 0;
+    for (var i = 0; i < this.currentScores.length; i++) {
+        if (this.currentScores[winner] < this.currentScores[i]) {
+            winner = i;
+        }
+    }
+
+    // store the scores globally
+    Slider.winner = winner + 1;
+    Slider.scores = this.currentScores;
+
+    // switch state
+    console.log("Ending game");
+    this.game.time.events.remove(this.timer);
+    this.state.start('GameOver');
 }
 
 // = = = = = = = = = = = = = = = = =
@@ -524,7 +545,7 @@ Slider.Game.prototype.goToNextRound = function() {
                 console.log(this.currentRound + "<-- curr round increment to");
             } else {
                 this.currentGameState = "endGame";
-                this.onClickQuitButton();
+                this.endTheGame();
             }
         }
 
