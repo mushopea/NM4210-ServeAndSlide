@@ -361,7 +361,6 @@ Slider.Game.prototype.updateSpeechPostRound = function(scoreRating) {
     if (this.speechgroup) { this.speechgroup.destroy(); }
     this.speechgroup = this.add.group();
 
-
     if (scoreRating == "bad") {
 
         txt = this.add.text(xpos, this.speechbubble.y + padding, "Nooo! Push the " + this.itemName[this.currentItem] + " with less force!", {
@@ -412,9 +411,16 @@ Slider.Game.prototype.updateSpeechPostRound = function(scoreRating) {
         console.log("Invalid scoreRating. Enter bad, normal or good.");
     }
 
+    pressSpaceToContinue = this.add.text(game.world.centerX, Slider.GAME_HEIGHT-20, "Press SPACE to continue!", {
+        font: "50px Balsamiq",
+        align: "center",
+        fill: '#000'
+    });
+    pressSpaceToContinue.anchor.set(0.5);
 
     this.speechgroup.add(txt);
     this.speechgroup.add(meme);
+    this.speechgroup.add(pressSpaceToContinue);
 }
 
 // show the round review
