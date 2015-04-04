@@ -73,6 +73,7 @@ button {
 	text-decoration: underline;
 	cursor: pointer;
 	text-align: center;
+	display: none;
 }
 button:hover {
 	color: #5AC2D9;
