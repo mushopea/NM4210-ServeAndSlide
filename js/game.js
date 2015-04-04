@@ -89,12 +89,12 @@ Slider.Game.prototype.initSounds = function() {
 Slider.Game.prototype.initUI = function() {
     this.initRoom();
     this.initCat();
-    this.updateBoundarySprite();
     this.updateTable();
     this.updatePlayer();
+    this.updateBoundarySprite();
     this.initQuitBtn();
     this.initScoreboard();
-    this.initSpeechBubble();
+    //this.initSpeechBubble();
     this.updateSpeech();
 }
 
@@ -134,7 +134,7 @@ Slider.Game.prototype.updateBoundarySprite = function() {
     this.boundarySprite = this.add.sprite(0, 0, 'roundfilled');
     this.boundarySprite.width = Slider.GAME_WIDTH;
     if (this.player) {
-        this.boundarySprite.height = this.cat.y + this.cat.height - this.player.height;
+        this.boundarySprite.height = this.cat.height - this.player.height;
     }
     this.boundarySprite.alpha = 0;
     this.physics.enable(this.boundarySprite, Phaser.Physics.ARCADE);
@@ -173,7 +173,10 @@ Slider.Game.prototype.initQuitBtn = function() {
 
 Slider.Game.prototype.initSpeechBubble = function() {
     // speech bubble
-    this.speechbubble = this.add.sprite(this.cat.x + this.cat.width + 50, 50, 'speechbubble');
+    if (this.speechbubble) { this.speechbubble.destroy(); }
+    this.speechbubble = this.add.sprite(this.cat.x, 50, 'speechbubble');
+    this.speechbubble.alpha = 0;
+    this.add.tween(this.speechbubble).to( { x: this.cat.x + this.cat.width + 50, y: 50, alpha: 100 }, 700, Phaser.Easing.Circular.Out, true);
 }
 
 
@@ -317,15 +320,18 @@ Slider.Game.prototype.updateScoreboard = function() {
 
 // update cat's speech
 Slider.Game.prototype.updateSpeech = function() {
+    this.initSpeechBubble();
     var padding = 30;
-    var xpos = padding + this.speechbubble.x + 200;
-    var speechspace = 345;
-    var tilesize = 90;
+    var speechspace = 345; // width of speech contents
+    var tilesize = 90; // size of the item thumbnail
+    var speechX = this.cat.x + this.cat.width + 50; // speech bubble x pos
+    var speechY = 50; // speech bubble y pos
+    var xpos = padding + speechX + 200; // x pos of speech contents
 
     if (this.speechgroup) { this.speechgroup.destroy(); }
     this.speechgroup = this.add.group();
 
-    txt = this.add.text(xpos, this.speechbubble.y + padding, "Please slide the " + this.itemName[this.currentItem] + " over to me!", {font: "30px Balsamiq", align: "center", fill:'#666', wordWrap: true, wordWrapWidth: speechspace});
+    txt = this.add.text(xpos, speechY + padding, "Please slide the " + this.itemName[this.currentItem] + " over to me!", {font: "30px Balsamiq", align: "center", fill:'#666', wordWrap: true, wordWrapWidth: speechspace});
     this.speechgroup.add(txt);
 
     itemTile = this.add.sprite(xpos, txt.y + txt.height + padding, this.itemTile[this.currentItem]);
@@ -349,6 +355,10 @@ Slider.Game.prototype.updateSpeech = function() {
 
     surfaceFriction = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceName.y + surfaceName.height + 10, this.surfaceFrictionText[this.currentSurface] + " friction", {font: "30px Balsamiq", align: "center", fill:'#666'});
     this.speechgroup.add(surfaceFriction);
+
+    this.speechgroup.scale.set(0.7);
+
+    game.add.tween(this.speechgroup.scale).to({x: 1, y: 1},500,Phaser.Easing.Linear.None,true);
 }
 
 // give feedback after pushes in the speech bubble.
