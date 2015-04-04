@@ -64,6 +64,33 @@ Slider.Game.prototype.create = function() {
 }
 
 // = = = = = = = = = = = = = = = = =
+// Sensor stuff
+// = = = = = = = = = = = = = = = = =
+
+// Get the JSON data string from the IP address.
+Slider.Game.prototype.httpGet = function(theUrl) {
+    if (this.xmlHttp) {
+        this.xmlHttp = null;
+    }
+    this.xmlHttp = new XMLHttpRequest();
+    this.xmlHttp.open("GET", theUrl, false);
+    this.xmlHttp.send(null);
+    return this.xmlHttp.responseText;
+};
+
+// Get the accelerometer value! Call this every update
+Slider.Game.prototype.getSensorValue = function() {
+    var sensorData = JSON.parse(this.httpGet(Slider.ipAddress)).sensors;
+
+    // goes through sensor data to find linear acceleration
+    for (var m = 0; m < sensorData.length; m++) {
+        if (sensorData[m].type == 'linear_acceleration') {
+            return sensorData[m].values; // return lin_acc_y value
+        }
+    }
+};
+
+// = = = = = = = = = = = = = = = = =
 // Initializations
 // = = = = = = = = = = = = = = = = =
 
@@ -71,7 +98,6 @@ Slider.Game.prototype.initPhysics = function() {
     // We're going to be using physics, so enable the Arcade Physics system
     this.physics.startSystem(Phaser.Physics.ARCADE);
 }
-
 
 Slider.Game.prototype.initSounds = function() {
     this.breakSound = game.add.audio('break');
@@ -420,6 +446,11 @@ Slider.Game.prototype.updateSpeechPostRound = function(scoreRating) {
     this.speechgroup.add(meme);
 }
 
+
+// = = = = = = = = = = = = = = = = =
+// State changing
+// = = = = = = = = = = = = = = = = =
+
 Slider.Game.prototype.showNextPlayerText = function() {
     if (Slider.numberOfPlayers > 1) {
         if (this.pressSpaceToContinue) { this.pressSpaceToContinue.destroy(); }
@@ -527,37 +558,6 @@ Slider.Game.prototype.enableSpacebarToRoundReview = function() {
         this.showRoundReview();
     }
 }
-
-// = = = = = = = = = = = = = = = = =
-// Sensor stuff
-// = = = = = = = = = = = = = = = = =
-
-// Get the JSON data string from the IP address.
-Slider.Game.prototype.httpGet = function(theUrl) {
-    if (this.xmlHttp) {
-        this.xmlHttp = null;
-    }
-    this.xmlHttp = new XMLHttpRequest();
-    this.xmlHttp.open("GET", theUrl, false);
-    this.xmlHttp.send(null);
-    return this.xmlHttp.responseText;
-};
-
-// Get the accelerometer value! Call this every update
-Slider.Game.prototype.getSensorValue = function() {
-    var sensorData = JSON.parse(this.httpGet(Slider.ipAddress)).sensors;
-
-    // goes through sensor data to find linear acceleration
-    for (var m = 0; m < sensorData.length; m++) {
-        if (sensorData[m].type == 'linear_acceleration') {
-            return sensorData[m].values; // return lin_acc_y value
-        }
-    }
-};
-
-// = = = = = = = = = = = = = = = = =
-// State changing
-// = = = = = = = = = = = = = = = = =
 
 Slider.Game.prototype.showScore = function() {
 
