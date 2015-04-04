@@ -11,7 +11,7 @@ Slider.Game = function(game) {
     this.itemTile = ['teatile', 'winetile', 'milktile', 'beertile', 'watertile'];
     this.itemMassDescription = ['tiny', 'small', 'medium', 'large', 'very large'];
     this.itemWeightDescription = ["very light", "light", "of normal weight", "heavy", "very heavy"];
-    this.itemForceDescription = ["very little", "rather little", "a fair amount of", "quite strong", "very strong"];
+    this.itemForceDescription = ["very little", "only a little", "a fair amount of", "quite a strong", "a very strong"];
     this.itemShortDescription = ["Very light", "Light", "Normal weight", "Heavy", "Very heavy"];
 
     // surface values
@@ -20,6 +20,7 @@ Slider.Game = function(game) {
     this.surfaceTile = ['woodtile', 'carpettile', 'icetile'];
     this.surfaceFriction = [0.3, 0.6, 0.05]; // source: http://www.engineeringtoolbox.com/friction-coefficients-d_778.html
     this.surfaceFrictionText = ["Normal", "High", "Low"];
+    this.surfaceFrictionTextLowerCase = ["normal", "high", "low"];
     this.surfaceFrictionEase = ["normally", "with difficulty", "easily"];
     this.surfaceFrictionForce = ["normal", "larger", "smaller"];
     this.surfaceFrictionMultiplier = [1, 0.75, 1.5];
@@ -60,7 +61,6 @@ Slider.Game.prototype.create = function() {
     this.initPhysics();
     this.initUI();
     this.initSounds();
-    // this.initBGM();
 }
 
 // = = = = = = = = = = = = = = = = =
@@ -72,11 +72,6 @@ Slider.Game.prototype.initPhysics = function() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
 }
 
-Slider.Game.prototype.initBGM = function() {
-    this.bgm = game.add.audio('bgm');
-    this.bgm.onDecoded.add(function() { this.bgm.fadeIn(5000); }, this);
-    this.bgm.play();
-}
 
 Slider.Game.prototype.initSounds = function() {
     this.breakSound = game.add.audio('break');
@@ -356,9 +351,9 @@ Slider.Game.prototype.updateSpeech = function() {
     surfaceFriction = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceName.y + surfaceName.height + 10, this.surfaceFrictionText[this.currentSurface] + " friction", {font: "30px Balsamiq", align: "center", fill:'#666'});
     this.speechgroup.add(surfaceFriction);
 
+    // animate the speech contents
     this.speechgroup.scale.set(0.7);
-
-    game.add.tween(this.speechgroup.scale).to({x: 1, y: 1},500,Phaser.Easing.Linear.None,true);
+    game.add.tween(this.speechgroup.scale).to({x: 1, y: 1}, 500, Phaser.Easing.Linear.None, true);
 }
 
 // give feedback after pushes in the speech bubble.
@@ -373,7 +368,7 @@ Slider.Game.prototype.updateSpeechPostRound = function(scoreRating) {
 
     if (scoreRating == "bad") {
 
-        txt = this.add.text(xpos, this.speechbubble.y + padding, "Nooo! Push the " + this.itemName[this.currentItem] + " with less force!", {
+        txt = this.add.text(xpos, this.speechbubble.y + padding, "Aaah! Push the " + this.itemName[this.currentItem] + " with less force!", {
             font: "30px Balsamiq",
             align: "center",
             fill: '#B0475A',
@@ -421,21 +416,116 @@ Slider.Game.prototype.updateSpeechPostRound = function(scoreRating) {
         console.log("Invalid scoreRating. Enter bad, normal or good.");
     }
 
-    pressSpaceToContinue = this.add.text(game.world.centerX, Slider.GAME_HEIGHT-20, "Press SPACE to continue!", {
-        font: "50px Balsamiq",
-        align: "center",
-        fill: '#000'
-    });
-    pressSpaceToContinue.anchor.set(0.5);
-
     this.speechgroup.add(txt);
     this.speechgroup.add(meme);
-    this.speechgroup.add(pressSpaceToContinue);
+}
+
+Slider.Game.prototype.showNextPlayerText = function() {
+    if (Slider.numberOfPlayers > 1) {
+        if (this.pressSpaceToContinue) { this.pressSpaceToContinue.destroy(); }
+
+        var nextPlayer = this.currentPlayer + 1;
+        if (nextPlayer > Slider.numberOfPlayers) {
+            nextPlayer = 1;
+        }
+
+        nextPlayerText= this.add.text(game.world.centerX, Slider.GAME_HEIGHT - 25, "Pass the phone to Player " + nextPlayer + ", then press SPACE to continue.", {
+            font: "40px Balsamiq",
+            align: "center",
+            fill: '#B0293C'
+        });
+        nextPlayerText.anchor.set(0.5);
+    }
+}
+
+Slider.Game.prototype.closeRoundReview = function() {
+    this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onUp.add(function () {
+        if (this.roundReviewGroup) { this.roundReviewGroup.destroy(); }
+        if (this.nextPlayerText) { this.nextPlayerText.destroy(); }
+        this.goToNextRound();
+    }, this);
 }
 
 // show the round review
 Slider.Game.prototype.showRoundReview = function() {
-    
+    this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onUp.add(function () {
+        game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
+        var padding = 30;
+        var sidePadding = 100;
+        var lineSpacing = 5;
+        var tilesize = 200; // size of the item thumbnail
+
+        if (this.roundReviewGroup) { this.roundReviewGroup.destroy(); }
+        this.roundReviewGroup = this.add.group();
+
+        // the background of the round review board
+        roundReviewBoard = this.add.graphics(320, Slider.GAME_HEIGHT / 1.6);
+        roundReviewBoard.beginFill(0xFFFFFF, 1);
+        roundReviewBoard.bounds = new PIXI.Rectangle(0, 0, Slider.GAME_WIDTH, Slider.GAME_HEIGHT- Slider.GAME_HEIGHT / 2.8);
+        roundReviewBoard.drawRect(0, 0, Slider.GAME_WIDTH, Slider.GAME_HEIGHT- Slider.GAME_HEIGHT / 2.8);
+        roundReviewBoard.alpha = 0.95;
+
+        // round review contents start
+        yourScore = this.add.text(sidePadding, roundReviewBoard.y + sidePadding/2, "Your score: " + this.currentRoundScore, {font: "50px Fredoka", align: "center", fill:'#5FBEEE'});
+        yourScore.x = 930;
+        aReview = this.add.text(roundReviewBoard.x + sidePadding, yourScore.y + yourScore.height + padding, "Learn more about this round!", {font: "40px Balsamiq", align: "center", fill:'#000'});
+
+        itemTile = this.add.sprite(roundReviewBoard.x + sidePadding, aReview.y + aReview.height + padding, this.itemTile[this.currentItem]);
+        itemTile.width = tilesize;
+        itemTile.height = tilesize;
+        surfaceTile = this.add.sprite(itemTile.x, itemTile.y + itemTile.height + padding + 10, this.surfaceTile[this.currentSurface]);
+        surfaceTile.width = tilesize;
+        surfaceTile.height = tilesize;
+
+        itemName = this.add.text(itemTile.x + itemTile.width + padding, itemTile.y + 7, this.itemName[this.currentItem], {font: "45px Fredoka", align: "center", fill:'#5FBEEE'});
+        surfaceName = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceTile.y + 7, this.surfaceNameCapital[this.currentSurface] + " surface", {font: "45px Fredoka", align: "center", fill:'#5FBEEE'});
+
+        itemSentence1 = this.add.text(itemTile.x + itemTile.width + padding, itemName.y + itemName.height + lineSpacing, "The " + this.itemName[this.currentItem] + " has a " + this.itemMassDescription[this.currentItem] + " mass.", {font: "35px Balsamiq", align: "center", fill:'#000'});
+        itemSentence2 = this.add.text(itemTile.x + itemTile.width + padding, itemSentence1.y + itemSentence1.height + lineSpacing, "This means it is " + this.itemWeightDescription[this.currentItem] + "!", {font: "35px Balsamiq", align: "center", fill:'#000'});
+        itemSentence3 = this.add.text(itemTile.x + itemTile.width + padding, itemSentence2.y + itemSentence2.height + lineSpacing, "You need " + this.itemForceDescription[this.currentItem] + " force to move it.", {font: "35px Balsamiq", align: "center", fill:'#000'});
+        surfaceSentence1 = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceName.y + surfaceName.height + lineSpacing, this.surfaceNameCapital[this.currentSurface] + " is a surface with " + this.surfaceFrictionTextLowerCase[this.currentSurface] + " friction.", {font: "35px Balsamiq", align: "center", fill:'#000'});
+        surfaceSentence2 = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceSentence1.y + surfaceSentence1.height + lineSpacing, "Objects slide across " + this.surfaceName[this.currentSurface] + " " + this.surfaceFrictionEase [this.currentSurface] + ".", {font: "35px Balsamiq", align: "center", fill:'#000'});
+        surfaceSentence3 = this.add.text(surfaceTile.x + surfaceTile.width + padding, surfaceSentence2.y + surfaceSentence2.height + lineSpacing, "You need a " + this.surfaceFrictionForce [this.currentSurface] + " amount of force to slide objects across it.", {font: "35px Balsamiq", align: "center", fill:'#000'});
+
+        // add to the group
+        this.roundReviewGroup.add(roundReviewBoard);
+        this.roundReviewGroup.add(yourScore);
+        this.roundReviewGroup.add(aReview);
+        this.roundReviewGroup.add(itemTile);
+        this.roundReviewGroup.add(surfaceTile);
+        this.roundReviewGroup.add(itemName);
+        this.roundReviewGroup.add(surfaceName);
+        this.roundReviewGroup.add(itemSentence1);
+        this.roundReviewGroup.add(itemSentence2);
+        this.roundReviewGroup.add(itemSentence3);
+        this.roundReviewGroup.add(surfaceSentence1);
+        this.roundReviewGroup.add(surfaceSentence2);
+        this.roundReviewGroup.add(surfaceSentence3);
+
+        // scale round review popup
+        this.roundReviewGroup.scale.set(0.4);
+        this.add.tween(this.roundReviewGroup.scale).to( { x: 0.7, y: 0.7 }, 500, Phaser.Easing.Cubic.InOut, true);
+
+        // show instructions to continue from this round review
+        this.showNextPlayerText();
+
+        // press space to go to the next round
+        this.closeRoundReview();
+
+    }, this);
+}
+
+Slider.Game.prototype.enableSpacebarToRoundReview = function() {
+    if (!this.showedScore) {
+        if (this.pressSpaceToContinue) { this.pressSpaceToContinue.destroy(); }
+        this.pressSpaceToContinue = this.add.text(game.world.centerX, Slider.GAME_HEIGHT-25, "Press SPACE to continue!", {
+            font: "50px Balsamiq",
+            align: "center",
+            fill: '#000'
+        });
+        this.pressSpaceToContinue.anchor.set(0.5);
+        this.showRoundReview();
+    }
 }
 
 // = = = = = = = = = = = = = = = = =
@@ -470,6 +560,7 @@ Slider.Game.prototype.getSensorValue = function() {
 // = = = = = = = = = = = = = = = = =
 
 Slider.Game.prototype.showScore = function() {
+
     if (this.currentRoundScore != 0 && !this.showedScore) {
         // update score array
         var playerNo = this.currentPlayer-1;
@@ -516,6 +607,9 @@ Slider.Game.prototype.showCatAnimationAndScore = function() {
         // cup hits cat.
         game.physics.arcade.overlap(this.player, this.boundarySprite, function () {
             this.cat.animations.play("hit");
+            this.currentRoundScore = 0;
+            this.enableSpacebarToRoundReview();
+            this.showScore();
             this.updateSpeechPostRound("bad");
             this.breakSound.play();
             this.player.destroy();
@@ -524,6 +618,7 @@ Slider.Game.prototype.showCatAnimationAndScore = function() {
         // cup remains on table. show happy cat and score.
         if (this.player.body.velocity.y === 0) {
             this.calculateCurrentRoundScore();
+            this.enableSpacebarToRoundReview();
             this.showScore();
             if (this.currentRoundScore < 60) {
                 this.updateSpeechPostRound("normal");
@@ -545,15 +640,17 @@ Slider.Game.prototype.resetGameVariables = function() {
     this.updateSpeech();
     this.currMaxValue = 0;
     this.cat.animations.play("idle");
+    if (this.roundReviewGroup) { this.roundReviewGroup.destroy(); }
+    if (this.pressSpaceToContinue) { this.pressSpaceToContinue.destroy(); }
     this.currentGameState = "waitingToPushObject";
     this.showedScore = false;
     game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 }
 
 Slider.Game.prototype.goToNextRound = function() {
-    this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function () {
+    game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 
-        // change player or round.
+    // change player or round.
         if (this.currentPlayer < Slider.numberOfPlayers) {
             this.currentPlayer++;
         } else {
@@ -568,7 +665,6 @@ Slider.Game.prototype.goToNextRound = function() {
         }
 
        this.resetGameVariables();
-    }, this); //esc to quit
 }
 
 Slider.Game.prototype.update = function() {
@@ -576,7 +672,6 @@ Slider.Game.prototype.update = function() {
     if (this.currentGameState == "waitingToPushObject") {
         var sensorValue = this.getSensorValue();
         var magnitude = Math.sqrt((sensorValue[0]*sensorValue[0]) + (sensorValue[1]*sensorValue[1]) + (sensorValue[2]*sensorValue[2]));
-        // console.log("For update " + this.frameCount + ", acceleration value is " + sensorValue);
 
         if (magnitude > this.minSensorValue) { // sensor value is above threshold
 
@@ -601,7 +696,6 @@ Slider.Game.prototype.update = function() {
                if (this.gestureguide) { this.gestureguide.destroy(); }
 
                // next round, switch out of game state.
-               this.goToNextRound();
                this.currentGameState = "postRound";
            }
 
