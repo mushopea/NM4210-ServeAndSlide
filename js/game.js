@@ -6,7 +6,7 @@ Slider.Game = function(game) {
 
     // item values
     this.itemName = ["Tea Cup", "Wine Glass", "Milk Bottle", "Beer Bottle", "Water Jug"];
-    this.itemWeight = [100, 200, 300, 500, 700];
+    this.itemWeight = [120, 200, 300, 500, 600];
     this.itemImage = ['teaCup', 'wineGlass', 'milkBottle', 'beerBottle', 'waterJug'];
     this.itemTile = ['teatile', 'winetile', 'milktile', 'beertile', 'watertile'];
     this.itemMassDescription = ['tiny', 'small', 'medium', 'large', 'very large'];
